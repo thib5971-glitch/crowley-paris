@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://thib5971-glitch.github.io/crowley-paris/sitemap.xml

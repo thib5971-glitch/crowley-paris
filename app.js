@@ -75,9 +75,10 @@ const IC = {
   cal:`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>`,
   metro:`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 16V8l4 5 4-5v8"/></svg>`,
   now:`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+  page:`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>`,
   replay:`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5"/><path d="M4 4v4.5h4.5"/></svg>`
 };
-const S = {lang:"fr", D:null, OQ:{}, mode:"all", tour:null, sel:null, ids:[], year:1899, play:0, base:"plan", mk:{}, lines:null, full:null, dot:null, raf:0, tok:0, mt:0, geo:{}, view:"list"};
+const S = {X:{}, XA:{}, PE:{}, lang:"fr", D:null, OQ:{}, mode:"all", tour:null, sel:null, ids:[], year:1899, play:0, base:"plan", mk:{}, lines:null, full:null, dot:null, raf:0, tok:0, mt:0, geo:{}, view:"list"};
 let T = UI.fr;
 function pickLang(){
   const q = new URLSearchParams(location.search).get("l"); if (LANGS.includes(q)) return q;
@@ -98,9 +99,25 @@ const BASES = {
   old:{l:()=>L.tileLayer(IGN("GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40","image/jpeg"), {minZoom:11, maxZoom:19, maxNativeZoom:15, attribution:"Carte de l'état-major (1820-1866) © IGN"}), th:"old"}
 };
 let baseL = null;
-function setBase(k){ if (baseL) baseL.remove(); S.base = k; baseL = BASES[k].l().addTo(map); baseL.bringToBack(); if (k==="old") toast(T.oldt); layersUI(); }
+let cmpL = null, cmpBar = null;
+map.createPane("cmp"); map.getPane("cmp").style.zIndex = 250;
+function cmpClip(){ if (!cmpL) return; const pane = map.getPane("cmp"), size = map.getSize(), x = S.cx * size.x, tl = map.containerPointToLayerPoint([0,0]);
+  pane.style.clip = `rect(${tl.y}px, ${tl.x + x}px, ${tl.y + size.y}px, ${tl.x}px)`; if (cmpBar) cmpBar.style.left = x + "px"; }
+function compare(on){
+  if (cmpL){ cmpL.remove(); cmpL = null; } if (cmpBar){ cmpBar.remove(); cmpBar = null; } map.off("move zoom resize", cmpClip);
+  if (!on) return;
+  S.cx = S.cx || .5;
+  cmpL = L.tileLayer(IGN("GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40","image/jpeg"), {pane:"cmp", minZoom:11, maxZoom:19, maxNativeZoom:15, attribution:"Carte de l'état-major (1820-1866) © IGN"}).addTo(map);
+  cmpBar = document.createElement("div"); cmpBar.className = "cmpbar"; cmpBar.innerHTML = `<span><b>1820-1866</b><i>⟷</i><b>${new Date().getFullYear()}</b></span>`; map.getContainer().append(cmpBar);
+  L.DomEvent.disableClickPropagation(cmpBar);
+  const mv = e => { const r = map.getContainer().getBoundingClientRect(), cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left; S.cx = Math.max(.02, Math.min(.98, cx / r.width)); cmpClip(); };
+  cmpBar.addEventListener("pointerdown", e=>{ e.preventDefault(); map.dragging.disable(); cmpBar.setPointerCapture(e.pointerId); cmpBar.onpointermove = mv; });
+  const up = ()=>{ cmpBar.onpointermove = null; map.dragging.enable(); }; cmpBar.addEventListener("pointerup", up); cmpBar.addEventListener("pointercancel", up);
+  map.on("move zoom resize", cmpClip); cmpClip(); toast(S.X.compareT);
+}
+function setBase(k){ if (baseL) baseL.remove(); S.base = k; compare(k==="cmp"); baseL = BASES[k==="cmp" ? "plan" : k].l().addTo(map); baseL.bringToBack(); if (k==="old") toast(T.oldt); layersUI(); }
 const thumb = k => IGN(k==="plan"?"GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2":k==="sat"?"ORTHOIMAGERY.ORTHOPHOTOS":"GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40", k==="plan"?"image/png":"image/jpeg").replace("{z}","14").replace("{y}","5636").replace("{x}","8299");
-function layersUI(){ const box = $("#layers"); box.innerHTML = ["plan","sat","old"].map(k=>`<button type="button" data-b="${k}" class="${S.base===k?"on":""}"><i style="background-image:url('${thumb(k)}')"></i>${esc(T[k])}</button>`).join("");
+function layersUI(){ const box = $("#layers"); box.innerHTML = ["plan","sat","old","cmp"].map(k=>`<button type="button" data-b="${k}" class="${S.base===k?"on":""}"><i style="background-image:${k==="cmp" ? `linear-gradient(90deg,transparent 50%,#fff 50%,#fff 52%,transparent 52%),url('${thumb("old")}')` : `url('${thumb(k)}')`}"></i>${esc(k==="cmp" ? S.X.compare : T[k])}</button>`).join("");
   box.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{ setBase(b.dataset.b); box.hidden = true; }); }
 const LG = L.layerGroup().addTo(map);
 map.on("zoomstart", ()=>map.getContainer().classList.add("zooming"));
@@ -187,10 +204,16 @@ function listView(){
   const head = tour ? `<div class="sec"><span class="kick">${esc(T.title)} · ${esc(T.places(tour.r.length))}</span><h1>${esc(tour.t)}</h1><p>${esc(tour.d)}</p><p class="meta">${esc(tour.m)}</p>
       <div class="row2" style="margin-top:12px"><button class="btn o" type="button" data-rp>${esc(T.replay)}</button></div></div>`
     : `<div class="sec"><span class="kick">${esc(T.yrs)}</span><h1>${esc(T.allt)}</h1><p style="margin:0">${esc(T.alld)}</p></div>`;
-  const box = pnSet(head + `<ul class="lst">${S.ids.map(rowHtml).join("")}</ul>` + cta());
+  const box = pnSet(head + `<ul class="lst">${S.ids.map(rowHtml).join("")}</ul>` + explore() + links() + cta());
   bindRows(box);
   const rp = box.querySelector("[data-rp]"); if (rp) rp.onclick = ()=>{ const T0 = tourOf(S.tour); fitPts(T0.r.map(id=>[P(id).lat, P(id).lon]), 16.5); map.once("moveend", ()=>geo(T0).then(g=>draw(g && g.length>1 ? g : T0.r.map(id=>[P(id).lat, P(id).lon])))); };
 }
+const PG = p => `${S.lang}/${p}`;
+function explore(){ const X = S.X, tour = S.mode==="tour" ? tourOf(S.tour) : null;
+  const a = (h, t, d) => `<li><a href="${h}"><b>${esc(t)}</b>${d ? `<small>${esc(d)}</small>` : ""}</a></li>`;
+  return `<div class="sec"><h3>${esc(X.more)}</h3><ul class="xl">${tour ? a(PG(`parcours/${tour.id}.html`), X.tourPage, X.print) : ""}${a(PG("lieux/"), X.placesAll, X.placesIntro)}${a(PG("personnages.html"), X.people, X.peopleIntro)}${a(PG("chronologie.html"), X.chrono, X.chronoIntro)}${a(PG("bibliographie.html"), X.biblio, X.biblioIntro)}</ul></div>`; }
+function links(){ const k = S.X.lk; if (!k) return ""; const [t, app, oasis, oto, book, amz] = k, a = (h, x) => `<li><a href="${h}" target="_blank" rel="noopener"><b>${esc(x)}</b></a></li>`;
+  return `<div class="sec"><h3>${esc(t)}</h3><ul class="xl">${a(APP_URL, app)}${a("https://www.oto-parisii.com/", oasis)}${a("https://www.ordotempliorientis.fr/", oto)}${a(`https://www.${amz}/dp/1644114798`, book)}</ul></div>`; }
 function cta(){ return `<div class="cta"><b>${esc(T.appT)}</b><p>${esc(T.appP)}</p><a class="btn" href="${APP_URL}" target="_blank" rel="noopener">${esc(T.appB)}</a></div>`; }
 function openPlace(id, fly){
   const p = P(id), H = S.D.hist[id] || {h:[], src:[]}; if (!p) return;
@@ -201,6 +224,7 @@ function openPlace(id, fly){
       <div class="tags" style="margin-top:6px">${nowBadge(p)}${p.w?`<span class="tag w">${esc(T.check)}</span>`:""}</div></div>
     <div class="acts"><button class="act p" type="button" data-z><span>${IC.zoom}</span>${esc(T.see)}</button>
       <button class="act" type="button" data-s><span>${IC.share}</span>${esc(T.share)}</button>
+      <a class="act" href="${PG(`lieux/${id}.html`)}"><span>${IC.page}</span>${esc(S.X.placePage)}</a>
       <a class="act" href="${APP_URL}" target="_blank" rel="noopener"><span>${IC.app}</span>${esc(T.app)}</a></div>
     <div class="sec facts">
       <div class="fact">${IC.pin}<span>${esc(p.ad)}</span></div>
@@ -211,6 +235,7 @@ function openPlace(id, fly){
     <div class="sec"><h3>${esc(T.pold)}</h3><div class="gal" id="galO"><p class="meta">${esc(T.loading)}</p></div></div>
     <div class="sec"><h3>${esc(T.pnow)}</h3><div class="gal" id="galN"><p class="meta">${esc(T.loading)}</p></div></div>
     ${H.src && H.src.length ? `<div class="sec"><h3>${esc(T.sources)}</h3><ul class="src">${H.src.map(s=>`<li>${s.u ? `<a href="${esc(s.u)}" target="_blank" rel="noopener">${esc(s.t)}</a>` : esc(s.t)}</li>`).join("")}</ul></div>` : ""}
+    ${(()=>{ const who = (S.PE[S.lang]||[]).filter(x=>x.at.includes(id) && x.id!==id); return who.length ? `<div class="sec"><h3>${esc(S.X.people)}</h3><ul class="xl">${who.map(x=>`<li><a href="${PG("personnages.html")}#${x.id}"><b>${esc(x.n)}</b>${x.y?`<small>${esc(x.y)}</small>`:""}</a></li>`).join("")}</ul></div>` : ""; })()}
     ${cta()}`);
   box.querySelector("[data-back]").onclick = ()=>{ S.sel = null; if (S.mode==="frise") friseView(); else listView(); hash(); };
   box.querySelector("[data-s]").onclick = ()=>share(id);
@@ -245,7 +270,7 @@ function year(y){
 function about(){
   S.view = "about";
   const box = pnSet(`<button class="back" type="button" data-back>${IC.back} ${esc(T.back)}</button><div class="sec"><span class="kick">${esc(T.yrs)}</span><h1>${esc(T.title)}</h1>
-    <p>${esc(T.abt)}</p><p>${esc(T.ab2)}</p><p class="meta">${esc(T.ab3)}</p><p class="meta" style="margin-top:8px">${esc(T.ab4)}</p></div>${cta()}`);
+    <p>${esc(T.abt)}</p><p>${esc(T.ab2)}</p><p class="meta">${esc(T.ab3)}</p><p class="meta" style="margin-top:8px">${esc(T.ab4)}</p></div>${links()}${cta()}`);
   box.querySelector("[data-back]").onclick = ()=>{ if (S.sel) openPlace(S.sel); else if (S.mode==="frise") friseView(); else listView(); };
   sheet(2);
 }
@@ -316,7 +341,7 @@ function search(q){
 
 /* ---------- partage, adresse de la page ---------- */
 function share(id){
-  const p = P(id), url = `${location.origin}${location.pathname}?l=${S.lang}#p=${id}`;
+  const dir = location.pathname.replace(/[^/]*$/, ""), p = P(id), url = `${location.origin}${dir}${S.lang}/lieux/${id}.html`;
   if (navigator.share){ navigator.share({title:`${p.nm} · ${T.title}`, url}).catch(()=>{}); return; }
   (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(()=>toast(T.copied)).catch(()=>prompt("", url));
 }
@@ -326,13 +351,16 @@ function hash(){ const h = S.mode==="tour" ? "t="+S.tour : S.mode==="frise" ? "f
 (async function start(){
   try { await load(pickLang()); } catch(e){ await load("fr"); }
   try { S.OQ = await (await fetch("data/oldq.json")).json(); } catch(e){}
+  try { S.PE = await (await fetch("data/people.json")).json(); } catch(e){ S.PE = {}; }
+  try { S.XA = await (await fetch("data/ui.json")).json(); } catch(e){ S.XA = {}; }
+  S.X = S.XA[S.lang] || S.XA.fr || {};
   setBase("plan");
   const h = new URLSearchParams(location.hash.slice(1)), t = h.get("t"), p = h.get("p");
   if (location.hash==="#frise") setMode("frise");
   else if (t && tourOf(t)) setMode("tour", t, !!p);
   else setMode("all", null, !!p);
   if (p && P(p)) openPlace(p, true);
-  $("#lang").onchange = async e=>{ const keep = {mode:S.mode, tour:S.tour, sel:S.sel}; await load(e.target.value); layersUI(); setMode(keep.mode, keep.tour, true); if (keep.sel) openPlace(keep.sel); };
+  $("#lang").onchange = async e=>{ const keep = {mode:S.mode, tour:S.tour, sel:S.sel}; await load(e.target.value); S.X = S.XA[S.lang] || S.XA.fr || {}; layersUI(); setMode(keep.mode, keep.tour, true); if (keep.sel) openPlace(keep.sel); };
   $("#about").onclick = about;
   $("#q").oninput = e=>search(e.target.value);
   $("#q").onkeydown = e=>{ if (e.key==="Enter"){ const b = $("#res [data-p]"); if (b) b.click(); } if (e.key==="Escape"){ $("#res").hidden = true; } };
