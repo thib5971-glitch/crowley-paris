@@ -13,6 +13,7 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="page.css">
 <style>
+html{background:#03051a radial-gradient(ellipse at 50% -10%,#10225a 0,#070d2c 45%,#03051a 100%) fixed!important}body{background:transparent!important}
 .home{max-width:980px;margin:0 auto;padding:22px 18px 40px}
 .top-l{display:flex;justify-content:flex-end}
 .top-l select{appearance:none;-webkit-appearance:none;background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;padding:7px 12px;font:inherit;font-family:var(--sc);font-weight:700;cursor:pointer}
@@ -161,5 +162,6 @@ let l0 = new URLSearchParams(location.search).get("l"); if (!AMZ[l0]){ try { l0 
 if (!AMZ[l0]){ const n = (navigator.language||"fr").slice(0,2).toLowerCase(); l0 = AMZ[n] ? n : "en"; }
 apply(l0); document.getElementById("lang").onchange = e=>apply(e.target.value);
 </script>
+<script src="stars.js"></script>
 </body>
 </html>
