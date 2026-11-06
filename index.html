@@ -62,14 +62,14 @@ h2.c{text-align:center;margin:28px 0 14px}
 .lg{display:grid;justify-items:center;gap:12px;text-decoration:none;color:#fff;text-align:center;max-width:170px}
 .lg .im{height:150px;display:grid;place-items:end center;transition:transform .35s ease,filter .35s ease;filter:drop-shadow(0 0 6px rgba(242,228,140,.55)) drop-shadow(0 0 18px rgba(242,200,90,.35));animation:glow 4.5s ease-in-out infinite}
 .lg .im img{max-height:150px;max-width:150px;display:block}
-.lg .duo{display:flex;align-items:flex-end}.lg .duo a{display:block;transition:transform .3s}.lg .duo img{max-height:138px;border-radius:2px 6px 6px 2px}.lg .duo a:first-child{transform:rotate(-7deg) translateX(10px);z-index:1}.lg .duo a:last-child{transform:rotate(6deg) translateX(-10px) translateY(4px)}.lg .duo a:hover{transform:translateY(-6px) scale(1.05);z-index:2}
+.lg .duo{display:flex;align-items:flex-end}.lg .duo>span{display:block;transition:transform .3s}.lg .duo img{max-height:138px;border-radius:2px 6px 6px 2px}.lg .duo>span:first-child{transform:rotate(-7deg) translateX(10px);z-index:1}.lg .duo>span:last-child{transform:rotate(6deg) translateX(-10px) translateY(4px)}.lg:hover .duo>span:first-child{transform:rotate(-11deg) translateX(2px) translateY(-6px)}.lg:hover .duo>span:last-child{transform:rotate(10deg) translateX(-2px) translateY(-2px)}
 .lg .bk3 img{max-height:146px;border-radius:2px 6px 6px 2px}
 .lg:nth-child(2) .im{animation-delay:-1.5s}.lg:nth-child(3) .im{animation-delay:-3s}
 .lg:hover .im:not(.duo){transform:translateY(-5px) scale(1.04);filter:drop-shadow(0 0 10px rgba(255,236,150,.9)) drop-shadow(0 0 30px rgba(242,200,90,.6))}
 .lg b{font-family:var(--sc);font-size:.92rem;letter-spacing:.04em;color:var(--gold)}
 @keyframes glow{50%{filter:drop-shadow(0 0 9px rgba(242,228,140,.75)) drop-shadow(0 0 26px rgba(242,200,90,.5))}}
 @media (prefers-reduced-motion:reduce){.lg .im{animation:none}}
-@media (max-width:620px){.logos{gap:14px}.lg .im{height:96px}.lg .im img{max-height:96px;max-width:96px}.lg .bk3 img{max-height:94px}.lg .duo img{max-height:84px}.lg .duo a:first-child{transform:rotate(-7deg) translateX(8px)}.lg .duo a:last-child{transform:rotate(6deg) translateX(-8px) translateY(3px)}.lg b{font-size:.74rem}}
+@media (max-width:620px){.logos{gap:14px}.lg .im{height:96px}.lg .im img{max-height:96px;max-width:96px}.lg .bk3 img{max-height:94px}.lg .duo img{max-height:84px}.lg .duo>span:first-child{transform:rotate(-7deg) translateX(8px)}.lg .duo>span:last-child{transform:rotate(6deg) translateX(-8px) translateY(3px)}.lg b{font-size:.74rem}}
 .tob{text-align:center;margin:4px 0 22px}.tob a{color:var(--acc);font-family:var(--sc);letter-spacing:.06em;font-size:.9rem;text-decoration:none;border-bottom:1px solid rgba(248,196,204,.4)}.tob a:hover{color:var(--gold)}
 .shelf{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin:6px 0 10px}
 .bk{display:grid;justify-items:center;gap:8px;width:150px;text-decoration:none;color:#fff;text-align:center}
@@ -108,7 +108,7 @@ h2.c{text-align:center;margin:28px 0 14px}
   <div class="enter"><a href="carte.html" data-h="carte.html"><span data-i="en">Entrer dans la carte</span><span aria-hidden="true">→</span></a></div>
 
   <section class="logos">
-    <div class="lg"><span class="im duo"><a data-amz="1644114798" href="https://www.amazon.fr/dp/1644114798" target="_blank" rel="noopener"><img src="img/livre-crowley-in-paris.jpg" alt="Aleister Crowley in Paris"></a><a data-amz="162055545X" href="https://www.amazon.fr/dp/162055545X" target="_blank" rel="noopener"><img src="img/l-livre.jpg" alt="Occult Paris"></a></span><b data-i="lgb">Les livres de Tobias Churton</b></div>
+    <a class="lg" data-amzs="tobias churton crowley paris" href="https://www.amazon.fr/s?k=tobias+churton+crowley+paris" target="_blank" rel="noopener"><span class="im duo"><span><img src="img/livre-crowley-in-paris.jpg" alt="Aleister Crowley in Paris"></span><span><img src="img/l-livre.jpg" alt="Occult Paris"></span></span><b data-i="lgb">Les livres de Tobias Churton</b></a>
     <a class="lg" href="https://horae93.app/#accueil" target="_blank" rel="noopener"><span class="im"><img src="img/l-horae.png" alt="Horae 93"></span><b>Horae 93</b></a>
     <a class="lg" href="https://www.ordotempliorientis.fr/" target="_blank" rel="noopener"><span class="im"><img src="img/l-oasis.png" alt="Oasis Parisii"></span><b>Oasis Parisii</b></a>
   </section>
@@ -165,7 +165,7 @@ function apply(l){
   document.querySelectorAll("[data-i]").forEach(e=>e.textContent = D[e.dataset.i]);
   document.title = D.title; document.documentElement.lang = l; document.getElementById("lang").value = l;
   document.querySelectorAll("[data-h]").forEach(a=>{ const h = a.dataset.h; a.href = h.includes("{L}") ? h.replace("{L}", l) : h.replace("carte.html", "carte.html?l="+l); });
-  document.querySelectorAll("[data-amz]").forEach(a=>a.href = `https://www.${AMZ[l]}/dp/${a.dataset.amz}`);
+  document.querySelectorAll("[data-amz]").forEach(a=>a.href = `https://www.${AMZ[l]}/dp/${a.dataset.amz}`); document.querySelectorAll("[data-amzs]").forEach(a=>a.href = `https://www.${AMZ[l]}/s?k=${encodeURIComponent(a.dataset.amzs).replace(/%20/g,"+")}`);
   try { localStorage.setItem("cap-lang", l); } catch(e){}
 }
 let l0 = new URLSearchParams(location.search).get("l"); if (!AMZ[l0]){ try { l0 = localStorage.getItem("cap-lang"); } catch(e){} }
