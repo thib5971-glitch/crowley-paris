@@ -73,3 +73,59 @@ p{line-height:1.7;color:var(--ink2)}
 .tb{justify-content:space-between}
 .lk{order:3;flex:1 1 100%;margin:0 -6px;padding-bottom:2px;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent)}
 @media (min-width:900px){.lk{order:0;flex:1 1 auto;margin:0;-webkit-mask-image:none}}
+
+/* ===== thème bleu nuit ===== */
+:root{--ink:#fff;--ink2:#dbe3ff;--mute:#9fb0d9;--line:rgba(255,255,255,.28);--soft:rgba(255,255,255,.08);--navy:#0a1533;--bg:#0e1d44;--acc:#f8c4cc;--gold:#f2e48c;--blue:#2f55e0;--red:#e3384a}
+body{background-color:var(--navy);background-image:radial-gradient(1px 1px at 20% 30%,rgba(255,255,255,.7),transparent 2px),radial-gradient(1px 1px at 70% 12%,rgba(255,255,255,.6),transparent 2px),radial-gradient(1.5px 1.5px at 85% 60%,rgba(255,255,255,.5),transparent 3px),radial-gradient(1px 1px at 40% 80%,rgba(255,255,255,.6),transparent 2px),radial-gradient(1200px 700px at 50% -10%,#16306e,transparent 70%);background-attachment:fixed;color:#fff}
+.tb{background:rgba(14,29,68,.95);border-bottom:2px solid transparent;border-image:linear-gradient(90deg,var(--blue) 0 33%,#fff 33% 66%,var(--red) 66%) 1}
+.br{color:#fff}.br small{color:var(--gold)}
+.lk a,.lg a{color:#fff;border:1.5px solid transparent;border-radius:10px}
+.lk a:hover,.lg a:hover{background:rgba(255,255,255,.08)}
+.lk a[aria-current],.lg a[aria-current]{background:var(--acc);color:var(--navy)}
+.kick{color:var(--gold)}
+h1,h2{color:#fff}h2 small{color:var(--mute)}
+h3{color:var(--gold)}
+p{color:var(--ink2)}
+a{color:var(--acc)}
+.tag{color:var(--ink2);border-color:var(--line)}
+.now{background:rgba(255,255,255,.1)}
+.now i{background:#7ee2a8}.n-g i{background:transparent;border-color:var(--red)}.n-p i,.n-u i{background:var(--gold)}.n-x i{background:var(--acc)}.n-v i{background:#8ec5ff}
+.facts,.cta{border:1.5px solid #fff;border-radius:10px;background:rgba(14,29,68,.7)}
+.facts b{color:var(--gold)}
+.btn{background:var(--acc);color:var(--navy);border-radius:10px}
+.btn.o{background:transparent;color:#fff;border:1.5px solid #fff}
+.wn{border-left-color:var(--red)}
+.lst{border-top-color:var(--soft)}
+.lst a{color:#fff;border-bottom-color:var(--soft)}
+.lst a:hover{background:rgba(255,255,255,.05)}
+.n{background:#fff;color:var(--navy)}
+.per{border-top-color:var(--line)}
+.tln{border-left-color:var(--acc)}
+.tln>li::before{background:var(--navy);border-color:var(--acc)}
+.tln .y{color:var(--gold)}
+.bib li{border-top-color:var(--soft)}
+.bib i{color:#fff}
+.mini{border:1.5px solid #fff;border-radius:10px;background:#0b1736}
+.mini .leaflet-tile-pane{filter:grayscale(1) invert(1) sepia(1) hue-rotate(185deg) saturate(2.4) brightness(.62) contrast(1.15)}
+.mk span{background:#fff;color:var(--navy);box-shadow:0 0 0 2px var(--navy)}
+.steps>li{border-top-color:var(--line)}
+.cta b{color:var(--gold)}
+.ft{border-top-color:var(--line);color:var(--mute)}
+.ft p,.lks span{color:var(--ink2)}.lks a{color:var(--acc)}
+@media print{body{background:#fff;color:#111}p,h1,h2,h3,.kick,.sh b{color:#111}.tag,.now{color:#111}.facts{border-color:#999}.n{background:#111;color:#fff}.mini .leaflet-tile-pane{filter:grayscale(1)}}
+
+/* ===== polices ===== */
+@font-face{font-family:"Uncial Antiqua";src:url(fonts/uncial-antiqua-latin-400-normal.woff2) format("woff2");font-display:swap}
+@font-face{font-family:"Amaranth";src:url(fonts/amaranth-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Amaranth";src:url(fonts/amaranth-latin-400-italic.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"Amaranth";src:url(fonts/amaranth-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Alegreya Sans SC";src:url(fonts/alegreya-sans-sc-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Alegreya Sans SC";src:url(fonts/alegreya-sans-sc-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+:root{--display:"Uncial Antiqua","Marcellus",Georgia,serif;--sans:"Amaranth","Manrope",system-ui,sans-serif;--sc:"Alegreya Sans SC","Manrope",sans-serif}
+body,button,input,select{font-family:var(--sans)}
+h1,h2,.yr b,.tln .y,.br span{font-family:var(--display);letter-spacing:.01em}
+h1{font-size:clamp(1.7rem,5.5vw,2.3rem)}h2{font-size:1.35rem}
+.chip,.btn,.kick,.lk a,.lg a,.act,.back,.lang,.tag,.now,.layers button,.cmpbar span,.br small,h3{font-family:var(--sc);letter-spacing:.04em}
+.chip{font-size:.98rem;font-weight:700}
+.kick{letter-spacing:.12em;font-size:.8rem;text-transform:none}
+p{font-size:1.02rem}

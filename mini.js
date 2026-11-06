@@ -4,7 +4,7 @@
   m.attributionControl.setPrefix(false);
   L.tileLayer("https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png", {maxZoom:19, maxNativeZoom:18, attribution:"Plan IGN © IGN"}).addTo(m);
   const ll = pts.map(p=>[p[0], p[1]]);
-  L.polyline(ll, {color:"#fff", weight:8, opacity:.95}).addTo(m); L.polyline(ll, {color:"#111", weight:3.5}).addTo(m);
+  L.polyline(ll, {color:"#0a1533", weight:8, opacity:.9}).addTo(m); L.polyline(ll, {color:"#f8c4cc", weight:3.5}).addTo(m);
   pts.forEach(p=>L.marker([p[0], p[1]], {icon:L.divIcon({className:"mk", html:`<span>${p[2]}</span>`, iconSize:[28,28], iconAnchor:[14,14]}), interactive:false}).addTo(m));
   m.fitBounds(L.latLngBounds(ll), {padding:[30,30], maxZoom:16});
 })();
