@@ -273,3 +273,21 @@ p{font-size:1.02rem}
 
 .mk.lit2 span{background:var(--acc);color:var(--navy);box-shadow:0 0 0 3px var(--navy),0 0 0 5px #fff,0 0 22px 6px rgba(248,196,204,.6);transform:scale(1.2)}
 .mk.dim span{opacity:.45}
+
+.sph.img{background-size:cover!important;background-position:center 20%!important;color:transparent}
+.sph.big{width:72px;height:72px}
+
+/* source du livre au-dessus de la recherche */
+.srcbk{display:none}
+@media (min-width:900px){
+  .pn::before{display:none}
+  .srcbk{display:flex;align-items:center;gap:12px;position:fixed;z-index:1100;left:12px;top:10px;width:calc(var(--pw) - 24px);height:76px;padding:8px 14px 8px 10px;box-sizing:border-box;border-radius:16px;background:var(--bg);border:1px solid var(--line);box-shadow:var(--sh);text-decoration:none;color:#fff;transition:border-color .2s}
+  .srcbk:hover{border-color:var(--gold)}
+  .srcbk .cov{width:40px;height:58px;padding:3px;font-size:.42rem;box-shadow:inset 4px 0 0 rgba(0,0,0,.25),0 0 12px rgba(242,228,140,.35)}
+  .srcbk small{display:block;font-family:var(--sc);font-size:.68rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase}
+  .srcbk b{display:block;font-family:var(--display);font-weight:400;font-size:1.08rem;line-height:1.15}
+  .srcbk i{display:block;font-style:normal;color:var(--ink2);font-size:.8rem}
+  .search{top:96px}
+  .secsw{top:154px}
+  .pn{padding-top:204px!important}
+}

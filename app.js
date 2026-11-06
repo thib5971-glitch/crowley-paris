@@ -179,20 +179,44 @@ function geoRefine(){
   next();
 }
 
+
+/* portraits : ceux fournis (img/), sinon l'image de tête de Wikipédia si sa licence est libre */
+const PIMG = {papus:"img/p-papus.jpg", o_papus:"img/p-papus.jpg", o_levi:"img/p-levi.jpg", rodin:"img/p-rodin.jpg", gkelly:"img/p-gkelly.jpg", yorke:"img/p-yorke.jpg", hirsig:"img/p-hirsig.jpg", moina:"img/p-moina.jpg", rose:"img/p-rose.jpg", mathers:"img/p-mathers.jpg", wilde:"img/p-wilde.jpg", neuburg:"img/p-neuburg.jpg", maugham:"img/p-maugham.jpg", o_moreau:"img/p-moreau.jpg", o_peladan:"img/p-peladan.jpg", o_doinel:"img/p-doinel.jpg", o_lacuria:"img/p-lacuria.jpg", o_caithness:"img/p-caithness.jpg", o_mallarme:"img/p-mallarme.jpg", o_satie:"img/p-satie.jpg", o_guaita:"img/p-guaita.jpg", o_michelet:"img/p-michelet.jpg", o_mathers:"img/p-mathers.jpg", o_moina:"img/p-moina.jpg"};
+const PWIKI = {mathers:"Samuel Liddell MacGregor Mathers", o_mathers:"Samuel Liddell MacGregor Mathers", moina:"Moina Mathers", o_moina:"Moina Mathers", rose:"Rose Edith Kelly", gkelly:"Gerald Kelly", rodin:"Auguste Rodin", o_moreau:"Gustave Moreau",
+  maugham:"W. Somerset Maugham", neuburg:"Victor Benjamin Neuburg", hirsig:"Leah Hirsig", yorke:"Gerald Yorke", wilde:"Oscar Wilde", o_guaita:"Stanislas de Guaita", o_peladan:"Joséphin Péladan", o_satie:"Erik Satie",
+  o_bailly:"fr:Edmond Bailly", o_caithness:"Marie, Countess of Caithness", o_lacuria:"fr:Paul-François-Gaspard Lacuria", o_mallarme:"Stéphane Mallarmé", o_doinel:"Jules Doinel", o_michelet:"fr:Victor-Émile Michelet"};
+let PCACHE = {}; try { PCACHE = JSON.parse(localStorage.getItem("cap-pimg")||"{}"); } catch(e){}
+const PPEND = {};
+function portrait(id){
+  if (PIMG[id]) return Promise.resolve({u:PIMG[id]});
+  if (PCACHE[id] !== undefined) return Promise.resolve(PCACHE[id]);
+  if (PPEND[id]) return PPEND[id];
+  const t = PWIKI[id]; if (!t) return Promise.resolve(null);
+  const [wk, title] = t.startsWith("fr:") ? ["fr", t.slice(3)] : ["en", t];
+  return PPEND[id] = fetch(`https://${wk}.wikipedia.org/w/api.php?origin=*&format=json&action=query&prop=pageimages&piprop=name|thumbnail&pithumbsize=200&redirects=1&titles=${encodeURIComponent(title)}`).then(r=>r.json()).then(j=>{
+      const pg = Object.values((j.query||{}).pages||{})[0]||{}; if (!pg.pageimage || !pg.thumbnail) return null;
+      return fetch(`https://commons.wikimedia.org/w/api.php?origin=*&format=json&action=query&prop=imageinfo&iiprop=extmetadata&titles=File:${encodeURIComponent(pg.pageimage)}`).then(r=>r.json()).then(k=>{
+        const ii = ((Object.values((k.query||{}).pages||{})[0]||{}).imageinfo||[])[0]; const m = (ii||{}).extmetadata||{}, lic = strip((m.LicenseShortName||{}).value);
+        if (!ii || !/public domain|^pd|cc0|cc[ -]by/i.test(lic)) return null;
+        return {u:pg.thumbnail.source, a:strip((m.Artist||{}).value), l:lic, p:`https://commons.wikimedia.org/wiki/File:${encodeURIComponent(pg.pageimage)}`}; }); })
+    .catch(()=>null).then(v=>{ PCACHE[id] = v; try { localStorage.setItem("cap-pimg", JSON.stringify(PCACHE)); } catch(e){} return v; });
+}
+function paintPortraits(root){ (root||document).querySelectorAll(".sph[data-ph]").forEach(el=>{ const id = el.dataset.ph; portrait(id).then(v=>{ if (!v || !v.u) return; const im = new Image(); im.onload = ()=>{ el.style.backgroundImage = `url("${v.u}")`; el.classList.add("img"); }; im.src = v.u; }); }); }
 /* ---------- personnages (sphères à droite) ---------- */
 const initials = n => String(n).replace(/\(.*?\)/g,"").split(/[\s-]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w)).slice(0,2).map(w=>w[0]).join("") || String(n)[0];
 const peopleOf = () => ((S.PE[S.lang]||S.PE.fr||{})[S.sec]) || [];
 function pLabel(pp){ const nm = n => n.replace(/\s*\(.*?\)/,"").trim(), last = n => nm(n).split(" ").slice(-1)[0], L = peopleOf(); return L.filter(x=>last(x.n)===last(pp.n)).length > 1 ? nm(pp.n).split(" ")[0] : last(pp.n); }
-function pplHtml(){ return peopleOf().map(pp=>`<button class="pchip" type="button" data-pp="${pp.id}" title="${esc(pp.n)}"><span class="sph${S.person && S.person.id===pp.id ? " on" : ""}">${esc(initials(pp.n))}</span><span>${esc(pLabel(pp))}</span></button>`).join(""); }
-function renderPeople(){ const box = $("#ppl"); if (box){ box.innerHTML = `<h4>${esc(T.pplT)}</h4>` + pplHtml(); box.querySelectorAll("[data-pp]").forEach(b=>b.onclick=()=>personOpen(b.dataset.pp)); } }
+function pplHtml(){ return peopleOf().map(pp=>`<button class="pchip" type="button" data-pp="${pp.id}" title="${esc(pp.n)}"><span class="sph${S.person && S.person.id===pp.id ? " on" : ""}" data-ph="${pp.id}">${esc(initials(pp.n))}</span><span>${esc(pLabel(pp))}</span></button>`).join(""); }
+function renderPeople(){ const box = $("#ppl"); if (box){ box.innerHTML = `<h4>${esc(T.pplT)}</h4>` + pplHtml(); box.querySelectorAll("[data-pp]").forEach(b=>b.onclick=()=>personOpen(b.dataset.pp)); paintPortraits(box); } }
 function personOpen(id){
   const pp = peopleOf().find(x=>x.id===id); if (!pp) return;
   const o = $("#pov"); const at = pp.at.filter(x=>P(x));
-  o.innerHTML = `<div class="povc" role="dialog" aria-modal="true" aria-label="${esc(pp.n)}"><div class="povh"><span class="sph">${esc(initials(pp.n))}</span><div><b>${esc(pp.n)}</b><small>${esc(pp.y||"")}</small></div><button class="x" type="button" data-x aria-label="${esc(T.back)}">✕</button></div>
+  o.innerHTML = `<div class="povc" role="dialog" aria-modal="true" aria-label="${esc(pp.n)}"><div class="povh"><span class="sph big" data-ph="${pp.id}">${esc(initials(pp.n))}</span><div><b>${esc(pp.n)}</b><small>${esc(pp.y||"")}</small></div><button class="x" type="button" data-x aria-label="${esc(T.back)}">✕</button></div>
     ${(pp.h||[]).map(x=>`<p>${esc(x)}</p>`).join("")}
     <h3 style="margin-top:14px">${esc(T.pplAt)}</h3><ul class="lst">${at.map(rowHtml).join("")}</ul>
     <div class="row2" style="margin-top:12px"><button class="btn" type="button" data-go>${esc(T.pplGo)}</button></div></div>`;
-  o.hidden = false;
+  o.hidden = false; paintPortraits(o);
+  portrait(pp.id).then(v=>{ if (v && v.a !== undefined && o.querySelector(".povc")){ const c = document.createElement("p"); c.className = "meta"; c.style.fontSize = ".75rem"; c.innerHTML = `<a href="${esc(v.p)}" target="_blank" rel="noopener">${esc(v.a||"Wikimedia Commons")}</a> · ${esc(v.l)}`; o.querySelector(".povh").after(c); } });
   const close = ()=>{ o.hidden = true; o.innerHTML = ""; };
   o.onclick = e=>{ if (e.target===o) close(); }; o.querySelector("[data-x]").onclick = close;
   o.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{ close(); S.person = pp; setMode("person"); openPlace(b.dataset.p, true); });
@@ -212,8 +236,16 @@ function renderBooks(){
   const card = (id, t, sub, img, cls) => `<a class="bkc" href="https://www.${amz}/dp/${id}" target="_blank" rel="noopener"><span class="cov ${cls}" style="background-image:url('img/${img}'), linear-gradient(160deg,${cls ? "#e3384a" : "#2f55e0"},#0a1533)">${esc(t)}</span><span><b>${esc(t)}</b><small>${esc(sub)}</small><span class="btn">${esc(T.amz)}</span></span></a>`;
   b.innerHTML = `<h3 style="margin:0 0 6px">${esc(T.booksT)}</h3>` + card("1644114798", "Aleister Crowley in Paris", "Inner Traditions, 2022", "livre-crowley-in-paris.jpg", "") + card("162055545X", "Occult Paris", "Inner Traditions, 2016", "livre-occult-paris.jpg", "op");
 }
+const SRCT = {fr:"La source de ces informations",en:"The source of this information",es:"La fuente de esta información",de:"Die Quelle dieser Angaben",it:"La fonte di queste informazioni"};
+function renderSrc(){
+  const a = $("#srcbk"); if (!a) return; const amz = (S.X.lk||[])[5] || "amazon.fr"; const op = S.sec === "op";
+  const [id, t, y, img] = op ? ["162055545X","Occult Paris","2016","livre-occult-paris.jpg"] : ["1644114798","Aleister Crowley in Paris","2022","livre-crowley-in-paris.jpg"];
+  a.href = `https://www.${amz}/dp/${id}`;
+  a.innerHTML = `<span class="cov${op?" op":""}" style="background-image:url('img/${img}'), linear-gradient(160deg,${op?"#e3384a":"#2f55e0"},#0a1533)">${op?"":esc(t)}</span><span><small>${esc(SRCT[S.lang]||SRCT.fr)}</small><b>${esc(t)}</b><i>Tobias Churton · ${y}</i></span>`;
+}
 /* ---------- puces ---------- */
 function chips(){
+  renderSrc();
   const c = $("#chips");
   const sw = $("#secsw"); if (sw){ sw.innerHTML = [["th",T.secTh],["op",T.secOp]].map(([k,l])=>`<button type="button" data-sec="${k}" class="${S.sec===k?"on":""}">${esc(l)}</button>`).join("");
     sw.querySelectorAll("[data-sec]").forEach(b=>b.onclick=()=>setSec(b.dataset.sec)); }
@@ -268,7 +300,7 @@ function listView(){
     : `<div class="sec"><span class="kick">${esc(yrs())}</span><h1>${esc(S.sec==="op" ? T.secOp : T.allt)}</h1><p style="margin:0">${esc(S.sec==="op" ? T.oalld : T.alld)}</p></div>`;
   const box = pnSet(head + `<ul class="lst">${S.ids.map(rowHtml).join("")}</ul>` + (pp ? "" : pr) + explore() + links() + cta());
   bindRows(box);
-  box.querySelectorAll(".inpanel [data-pp]").forEach(b=>b.onclick=()=>personOpen(b.dataset.pp));
+  box.querySelectorAll(".inpanel [data-pp]").forEach(b=>b.onclick=()=>personOpen(b.dataset.pp)); paintPortraits(box);
   const pc = box.querySelector("[data-pclr]"); if (pc) pc.onclick = ()=>setMode("all");
   const rp = box.querySelector("[data-rp]"); if (rp) rp.onclick = ()=>{ const T0 = tourOf(S.tour); fitPts(T0.r.map(id=>[P(id).lat, P(id).lon]), 16.5); map.once("moveend", ()=>geo(T0).then(g=>draw(g && g.length>1 ? g : T0.r.map(id=>[P(id).lat, P(id).lon])))); };
 }
@@ -300,11 +332,11 @@ function openPlace(id, fly){
     <div class="sec"><h3>${esc(T.pold)}</h3><div class="gal" id="galO"><p class="meta">${esc(T.loading)}</p></div></div>
     <div class="sec"><h3>${esc(T.pnow)}</h3><div class="gal" id="galN"><p class="meta">${esc(T.loading)}</p></div></div>
     ${H.src && H.src.length ? `<div class="sec"><h3>${esc(T.sources)}</h3><ul class="src">${H.src.map(s=>`<li>${s.u ? `<a href="${esc(s.u)}" target="_blank" rel="noopener">${esc(s.t)}</a>` : esc(s.t)}</li>`).join("")}</ul></div>` : ""}
-    ${(()=>{ const who = peopleOf().filter(x=>x.at.includes(id) && x.id!==id); return who.length ? `<div class="sec"><h3>${esc(S.X.people)}</h3><div class="prow">${who.map(x=>`<button class="pchip" type="button" data-pp="${x.id}"><span class="sph">${esc(initials(x.n))}</span><span>${esc(pLabel(x))}</span></button>`).join("")}</div></div>` : ""; })()}
+    ${(()=>{ const who = peopleOf().filter(x=>x.at.includes(id) && x.id!==id); return who.length ? `<div class="sec"><h3>${esc(S.X.people)}</h3><div class="prow">${who.map(x=>`<button class="pchip" type="button" data-pp="${x.id}"><span class="sph" data-ph="${x.id}">${esc(initials(x.n))}</span><span>${esc(pLabel(x))}</span></button>`).join("")}</div></div>` : ""; })()}
     ${cta()}`);
   box.querySelector("[data-back]").onclick = ()=>{ S.sel = null; if (S.mode==="frise") friseView(); else listView(); hash(); };
   box.querySelector("[data-s]").onclick = ()=>share(id);
-  box.querySelectorAll("[data-pp]").forEach(b=>b.onclick=()=>personOpen(b.dataset.pp));
+  box.querySelectorAll("[data-pp]").forEach(b=>b.onclick=()=>personOpen(b.dataset.pp)); paintPortraits(box);
   box.querySelector("[data-z]").onclick = ()=>{ map.flyTo([p.lat, p.lon], 18, {duration:1}); sheet(0); };
   if (fly) centerOn(p);
   sheet(1); hash();
