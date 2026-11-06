@@ -6,7 +6,7 @@
 <path d="M0-30.5l1.6 3.4h-3.2z" fill="#f8c4cc"/>
 <g transform="scale(.46)">
 <path id="r" d="M0,-46 L43,22 L-43,-22 L0,46 L43,-22 L-43,22 Z" fill="none" stroke="url(#g)" stroke-width="4.6" stroke-linejoin="miter" stroke-miterlimit="8"/>
-<path d="M0,-46 L43,22 L-43,-22 L0,46 L43,-22 L-43,22 Z" fill="none" stroke="#fff3c4" stroke-width="12" stroke-linecap="round" stroke-dasharray="34 481" opacity=".28"><animate attributeName="stroke-dashoffset" from="515" to="0" dur="7s" repeatCount="indefinite"/></path><path d="M0,-46 L43,22 L-43,-22 L0,46 L43,-22 L-43,22 Z" fill="none" stroke="#fffdf2" stroke-width="4.6" stroke-linecap="round" stroke-dasharray="18 497" opacity=".9"><animate attributeName="stroke-dashoffset" from="507" to="-8" dur="7s" repeatCount="indefinite"/></path>
+
 <circle r="20" fill="url(#p)"><animate attributeName="r" values="8;22;8" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0;.9" dur="3s" repeatCount="indefinite"/></circle>
 <circle r="6" fill="#f8c4cc" stroke="#081230" stroke-width="2.5"/>
 </g></g></svg>
