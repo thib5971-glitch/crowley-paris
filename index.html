@@ -16,6 +16,16 @@
 html{background:#03051a radial-gradient(ellipse at 50% -10%,#10225a 0,#070d2c 45%,#03051a 100%) fixed!important}body{background:transparent!important}
 .home{max-width:980px;margin:0 auto;padding:22px 18px 40px}
 .top-l{display:flex;justify-content:flex-end}
+.lsw{position:relative;z-index:20}
+.lsb{display:inline-flex;align-items:center;gap:8px;background:rgba(14,29,68,.75);color:#fff;border:1.5px solid rgba(242,228,140,.55);border-radius:22px;padding:8px 14px;font:inherit;font-family:var(--sc);font-weight:700;letter-spacing:.04em;cursor:pointer;box-shadow:0 0 14px rgba(242,200,90,.18);backdrop-filter:blur(6px);transition:border-color .2s,box-shadow .2s}
+.lsb:hover,.lsb[aria-expanded=true]{border-color:var(--gold);box-shadow:0 0 20px rgba(242,200,90,.4)}
+.lsb svg{color:var(--gold)}.lsb i{font-style:normal;font-size:.7rem;color:var(--gold);transition:transform .25s}.lsb[aria-expanded=true] i{transform:rotate(180deg)}
+.lsm{position:absolute;right:0;top:calc(100% + 8px);margin:0;padding:6px;list-style:none;min-width:170px;border-radius:16px;background:linear-gradient(180deg,rgba(22,40,100,.97),rgba(8,14,44,.97));border:1px solid rgba(242,228,140,.45);box-shadow:0 18px 40px rgba(0,0,0,.6),0 0 24px rgba(242,200,90,.15);animation:lsIn .2s ease}
+.lsm li{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;color:#fff;cursor:pointer;font-size:.95rem;transition:background .15s}
+.lsm li b{display:grid;place-items:center;width:30px;height:22px;border-radius:6px;font-family:var(--sc);font-size:.72rem;letter-spacing:.06em;color:var(--gold);border:1px solid rgba(242,228,140,.4)}
+.lsm li:hover{background:rgba(248,196,204,.14)}
+.lsm li.on{background:rgba(242,228,140,.14)}.lsm li.on b{background:var(--gold);color:var(--navy)}
+@keyframes lsIn{from{opacity:0;transform:translateY(-6px)}}
 .top-l select{appearance:none;-webkit-appearance:none;background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;padding:7px 12px;font:inherit;font-family:var(--sc);font-weight:700;cursor:pointer}
 .hero{text-align:center;padding:10px 0 26px}
 .hero img{width:112px;height:112px;filter:drop-shadow(0 10px 30px rgba(248,196,204,.25));animation:fl 6s ease-in-out infinite}
@@ -100,7 +110,7 @@ h2.c{text-align:center;margin:28px 0 14px}
 </head>
 <body>
 <main class="home">
-  <div class="top-l"><select id="lang" aria-label="Langue · Language"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option><option value="it">Italiano</option></select></div>
+  <div class="top-l"><select id="lang" hidden aria-label="Langue · Language"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option><option value="it">Italiano</option></select><div class="lsw" id="lsw"><button type="button" class="lsb" id="lsb" aria-haspopup="listbox" aria-expanded="false"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg><span id="lsl">Français</span><i>▾</i></button><ul class="lsm" id="lsm" role="listbox" hidden><li role="option" data-l="fr"><b>FR</b>Français</li><li role="option" data-l="en"><b>EN</b>English</li><li role="option" data-l="es"><b>ES</b>Español</li><li role="option" data-l="de"><b>DE</b>Deutsch</li><li role="option" data-l="it"><b>IT</b>Italiano</li></ul></div></div>
   <header class="hero">
     <img src="icon.svg" alt="">
     <h1 class="ttl"><span class="t1">Thelemic Map</span><span class="t2" aria-label="Paris"><i>Pa</i><i>ri</i><i>s</i></span></h1>
@@ -160,7 +170,14 @@ function apply(l){
 }
 let l0 = new URLSearchParams(location.search).get("l"); if (!AMZ[l0]){ try { l0 = localStorage.getItem("cap-lang"); } catch(e){} }
 if (!AMZ[l0]){ const n = (navigator.language||"fr").slice(0,2).toLowerCase(); l0 = AMZ[n] ? n : "en"; }
-apply(l0); document.getElementById("lang").onchange = e=>apply(e.target.value);
+const lsb=document.getElementById("lsb"), lsm=document.getElementById("lsm"), NM={fr:"Français",en:"English",es:"Español",de:"Deutsch",it:"Italiano"};
+function lsSync(l){ document.getElementById("lsl").textContent = NM[l]||l; lsm.querySelectorAll("li").forEach(li=>li.classList.toggle("on", li.dataset.l===l)); }
+function lsOpen(v){ lsm.hidden = !v; lsb.setAttribute("aria-expanded", v); }
+lsb.onclick = e=>{ e.stopPropagation(); lsOpen(lsm.hidden); };
+lsm.querySelectorAll("li").forEach(li=>li.onclick = ()=>{ apply(li.dataset.l); lsSync(li.dataset.l); lsOpen(false); });
+document.addEventListener("click", e=>{ if (!e.target.closest("#lsw")) lsOpen(false); });
+document.addEventListener("keydown", e=>{ if (e.key==="Escape") lsOpen(false); });
+apply(l0); lsSync(document.getElementById("lang").value || l0); document.getElementById("lang").onchange = e=>apply(e.target.value);
 </script>
 <script src="stars.js"></script>
 </body>
