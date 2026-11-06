@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thelema à Paris · la carte</title>
+<meta name="description" content="La carte interactive de Thelema à Paris : les lieux d'Aleister Crowley (1900-1929) et le Paris occulte de la Belle Époque, avec l'histoire de chaque adresse.">
+<meta name="theme-color" content="#0a1533">
+<meta property="og:title" content="Thelema à Paris">
+<meta property="og:description" content="Une carte interactive des lieux d'Aleister Crowley à Paris : 31 lieux, huit parcours, la frise 1900-1929.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="og.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="lib/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="map" aria-label="Carte de Paris"></div>
+
+<div class="bar">
+  <div class="search" role="search">
+    <a href="./" class="logo-a" aria-label="Accueil"><img class="logo" src="icon.svg" alt=""></a>
+    <label class="sr" for="q" data-i="search">Rechercher un lieu</label>
+    <input id="q" type="search" autocomplete="off" placeholder="Rechercher un lieu" data-ph="search">
+    <select class="lang" id="lang" aria-label="Langue"><option value="fr">FR</option><option value="en">EN</option><option value="es">ES</option><option value="de">DE</option><option value="it">IT</option></select>
+    <button class="ib" id="about" type="button" aria-label="À propos" data-ia="about"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button>
+    <div class="res" id="res" hidden></div>
+  </div>
+  <div class="secsw" id="secsw" role="tablist"></div>
+  <div class="chips" id="chips" role="tablist"></div>
+</div>
+
+<a class="lamen" id="lamen" href="./"><img src="icon.svg" alt=""><span><small data-i="lamenK">Crowley · Paris occulte</small><b data-i="site">Thelema à Paris</b></span></a>
+<div class="basesw" id="basesw"><button type="button" data-bs="plan" data-i="plan">Plan</button><button type="button" data-bs="sat" data-i="sat">Satellite</button></div>
+<aside class="ppl" id="ppl" aria-label="Personnages"></aside>
+<div class="chrono" id="chrono"></div>
+<button class="booksBtn" id="booksBtn" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5.5C6.5 4 9.5 4 12 6c2.5-2 5.5-2 8-.5V19c-2.5-1.5-5.5-1.5-8 .5-2.5-2-5.5-2-8-.5z"/><path d="M12 6v13.5"/></svg><span data-i="booksB">Les livres</span></button>
+<div class="booksPn" id="booksPn" hidden></div>
+<div class="pov" id="pov" hidden></div>
+<aside class="pn" id="pn" aria-live="polite">
+  <div class="grab" id="grab" role="button" tabindex="0" aria-label="Agrandir le panneau" data-ia="expand"></div>
+  <div class="pn-in" id="pnIn"></div>
+</aside>
+
+<div class="ctl" id="ctl">
+  <div class="layers" id="layers" hidden></div>
+  <button class="fab" id="lay" type="button" aria-label="Fonds de carte" data-ia="layers"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></button>
+  <button class="fab" id="home" type="button" aria-label="Vue de tout Paris" data-ia="home"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <div class="zm"><button id="zi" type="button" aria-label="Zoom +">+</button><button id="zo" type="button" aria-label="Zoom −">−</button></div>
+</div>
+<noscript><p style="padding:20px">Cette carte a besoin de JavaScript.</p></noscript>
+<script src="lib/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
