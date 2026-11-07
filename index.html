@@ -96,14 +96,15 @@ h2.c{text-align:center;margin:28px 0 14px}
 #intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 38%,#18367a 0,#0a1440 45%,#02040f 100%);cursor:pointer;transition:opacity 1.1s ease,visibility 1.1s;overflow:hidden}
 #intro.out{opacity:0;visibility:hidden}
 #intro::before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 50% 36%,rgba(242,200,90,.16),transparent 38%);animation:lamGlow2 4s ease-in-out infinite}
+#intro .ik,#intro .io,#intro .io2,#intro .ip{position:relative;z-index:3;text-shadow:0 0 6px #02040f,0 2px 16px rgba(2,4,15,.95),0 0 30px rgba(2,4,15,.8)}
 #intro .iw{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 20px;max-width:640px}
 #intro img{width:min(34vw,170px);max-height:34vh;height:auto;object-fit:contain;opacity:0;scale:.6;animation:inLam 1.8s .2s cubic-bezier(.2,.8,.2,1) forwards,lamGlow 3.4s 2s ease-in-out infinite}
-#intro .ik{margin-top:26px;font-family:var(--display);font-size:clamp(1.3rem,4.6vw,1.75rem);letter-spacing:.06em;color:#fff3cf;opacity:0;translate:0 10px;animation:inTx 1s 1.3s ease forwards}
+#intro .ik{margin-top:34px;font-family:var(--display);font-size:clamp(1.3rem,4.6vw,1.75rem);letter-spacing:.06em;color:#fff;opacity:0;translate:0 10px;animation:inTx 1s 1.3s ease forwards}
 #intro .orn{display:flex;align-items:center;gap:12px;width:min(320px,70vw);margin:14px 0 16px;color:var(--gold);opacity:0;animation:inTx 1s 1.6s ease forwards}
 #intro .orn::before,#intro .orn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(242,228,140,.8))}
 #intro .orn::after{background:linear-gradient(90deg,rgba(242,228,140,.8),transparent)}
 #intro .orn i{font-style:normal;font-size:.8rem}
-#intro .io{margin-top:14px;font-family:var(--display);font-size:clamp(1.5rem,5.4vw,2.1rem);letter-spacing:.04em;color:#fff3cf;opacity:0;animation:inTx 1s 1.9s ease forwards}
+#intro .io{margin-top:14px;font-family:var(--display);font-size:clamp(1.5rem,5.4vw,2.1rem);letter-spacing:.04em;color:#fff;opacity:0;animation:inTx 1s 1.9s ease forwards}
 #intro .io2{margin-top:6px;font-family:var(--sc);font-weight:700;text-transform:uppercase;letter-spacing:.3em;font-size:clamp(.7rem,2.4vw,.86rem);color:#f8c4cc;opacity:0;animation:inTx 1s 2.15s ease forwards}
 #intro .ip{margin:10px 0 6px;font-family:var(--sans);font-style:italic;font-size:clamp(.85rem,2.8vw,1rem);color:var(--ink2);opacity:0;animation:inTx 1s 2.45s ease forwards}
 #intro .it{font-family:var(--display);font-size:clamp(2.6rem,11vw,4.4rem);line-height:1.05;background:linear-gradient(180deg,#fff7d6 0,#f2e48c 55%,#c9962e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:blur(10px) drop-shadow(0 0 18px rgba(242,200,90,.35));opacity:0;animation:inTt 1.5s 2.75s ease forwards}
@@ -115,7 +116,7 @@ h2.c{text-align:center;margin:28px 0 14px}
 #intro .isk{position:absolute;bottom:max(22px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;font-family:var(--sc);letter-spacing:.2em;text-transform:uppercase;font-size:.66rem;color:rgba(223,230,255,.55);opacity:0;animation:inTx 1s 3.8s ease forwards,blink 2.4s 4.8s ease-in-out infinite}
 #intro .lw{position:relative;display:grid;place-items:center}
 #intro .lw img{position:relative;z-index:2}
-#intro .rays{position:absolute;z-index:0;left:50%;top:50%;width:min(130vw,760px);aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,226,140,.55) 0deg 3deg,rgba(255,226,140,0) 3deg 12deg);-webkit-mask:radial-gradient(circle,#000 0,rgba(0,0,0,.85) 18%,transparent 62%);mask:radial-gradient(circle,#000 0,rgba(0,0,0,.85) 18%,transparent 62%);opacity:0;scale:.3;animation:rayIn 2s .5s cubic-bezier(.2,.8,.2,1) forwards,raySpin 60s linear infinite}
+#intro .rays{position:absolute;z-index:0;left:50%;top:50%;width:min(130vw,760px);aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,226,140,.55) 0deg 3deg,rgba(255,226,140,0) 3deg 12deg);-webkit-mask:radial-gradient(circle,#000 0,rgba(0,0,0,.8) 16%,transparent 40%);mask:radial-gradient(circle,#000 0,rgba(0,0,0,.8) 16%,transparent 40%);opacity:0;scale:.3;animation:rayIn 2s .5s cubic-bezier(.2,.8,.2,1) forwards,raySpin 60s linear infinite}
 #intro .halo{position:absolute;z-index:1;left:50%;top:50%;width:min(80vw,380px);aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle,rgba(255,236,170,.75) 0,rgba(242,200,90,.35) 28%,transparent 62%);opacity:0;animation:haloIn 1.6s .6s ease forwards,haloPulse 3.6s 2.2s ease-in-out infinite}
 @keyframes rayIn{to{opacity:1;scale:1}}
 @keyframes raySpin{to{rotate:360deg}}
