@@ -263,10 +263,10 @@ function chips(){
 /* ---------- modes ---------- */
 function markers(ids, cls){
   LG.clearLayers(); S.mk = {}; S.lines = null; S.full = null;
-  ids.forEach(id=>{ const p = P(id);
+  ids.forEach((id, i)=>{ const p = P(id);
     const who = peopleOf().filter(pp=>pp.id!=="crowley" && pp.at.includes(id)), shown = who.slice(0,3), more = who.length - shown.length;
     const faces = who.length ? `<i class="mkf">${shown.map(pp=>`<b class="sph" data-ph="${pp.id}" title="${esc(pp.n)}">${esc(initials(pp.n))}</b>`).join("")}${more>0?`<b class="mkm">+${more}</b>`:""}</i>` : "";
-    const m = L.marker([p.lat, p.lon], {icon:L.divIcon({className:"mk"+(cls?" "+cls:""), html:`<span>${p.n}</span>${faces}`, iconSize:[32,32], iconAnchor:[16,16]}), title:p.nm, alt:p.nm, keyboard:true, riseOnHover:true}).addTo(LG);
+    const m = L.marker([p.lat, p.lon], {icon:L.divIcon({className:"mk"+(cls?" "+cls:""), html:`<span style="--d:${Math.min(i*0.035, 1.2).toFixed(3)}s">${p.n}</span>${faces.replace('<i class="mkf"', `<i class="mkf" style="--d:${Math.min(i*0.035, 1.2).toFixed(3)}s"`)}`, iconSize:[32,32], iconAnchor:[16,16]}), title:p.nm, alt:p.nm, keyboard:true, riseOnHover:true}).addTo(LG);
     if (who.length) setTimeout(()=>{ const el = m.getElement(); if (el) paintPortraits(el); }, 0);
     m.on("click", ()=>{ if (S.mode==="frise" && m.getElement().classList.contains("dim")) return; openPlace(id, true); }); S.mk[id] = m; });
 }
