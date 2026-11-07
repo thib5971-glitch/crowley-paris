@@ -376,7 +376,9 @@ function year(y){
 function about(){
   S.view = "about";
   const box = pnSet(`<button class="back" type="button" data-back>${IC.back} ${esc(T.back)}</button><div class="sec"><span class="kick">${esc(T.secTh)} · ${esc(T.secOp)}</span><h1>${esc(T.site)}</h1>
-    <p>${esc(T.oabt)}</p><p>${esc(T.ab2)}</p><p class="meta">${esc(T.ab3)}</p><p class="meta" style="margin-top:8px">${esc(T.ab4)}</p></div>${links()}${cta()}`);
+    <p>${esc(T.oabt)}</p><p>${esc(T.ab2)}</p><p class="meta">${esc(T.ab3)}</p><p class="meta" style="margin-top:8px">${esc(T.ab4)}</p><div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" type="button" data-wl>${esc(({fr:"Revoir la présentation",en:"See the introduction",es:"Ver la presentación",de:"Einführung ansehen",it:"Rivedi la presentazione"})[S.lang]||"Revoir la présentation")}</button><button class="btn" type="button" data-tr>${esc(({fr:"Visite guidée",en:"Guided tour",es:"Visita guiada",de:"Geführte Tour",it:"Visita guidata"})[S.lang]||"Visite guidée")}</button></div></div>${links()}${cta()}`);
+  box.querySelector("[data-wl]").onclick = ()=>window.tmWelcome && tmWelcome();
+  box.querySelector("[data-tr]").onclick = ()=>window.tmTour && tmTour();
   box.querySelector("[data-back]").onclick = ()=>{ if (S.sel) openPlace(S.sel); else if (S.mode==="frise") friseView(); else listView(); };
   sheet(2);
 }
