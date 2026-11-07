@@ -15,9 +15,9 @@ function tmPost(d){ var f = document.createElement("form"); f.method = "POST"; f
     var F = M.querySelector("form"), R = M.querySelector(".cm");
     F.addEventListener("submit", function(e){ e.preventDefault(); if (F.elements._honey.value) return; var sb = F.querySelector(".cs"); sb.disabled = true; R.textContent = t("w");
       var nm = F.elements.name.value.trim(), d = {name:nm, email:F.elements.email.value.trim(), objet:F.elements.kind.value, message:F.elements.message.value.trim(), langue:lg(), page:"carte", _subject:"Thelemic Map Paris · " + F.elements.kind.value + " · " + nm, _replyto:F.elements.email.value.trim(), _template:"table", _captcha:"false"};
-      fetch("https://formsubmit.co/ajax/secretariat.otoparisii@gmail.com", {method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body:JSON.stringify(d)})
-        .then(function(r){ return r.json(); }).then(function(j){ if (j && (j.success===true || j.success==="true")){ R.textContent = t("ok"); F.reset(); setTimeout(close, 2600); } else if (j && j.message && /activ/i.test(j.message)) R.textContent = j.message; else tmPost(d); })
-        .catch(function(){ tmPost(d); }).finally(function(){ sb.disabled = false; }); });
+      fetch("https://thelemicmap-contact.stele93.workers.dev/", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(d)})
+        .then(function(r){ return r.json(); }).then(function(j){ if (j && j.ok){ R.textContent = t("ok"); F.reset(); setTimeout(close, 2600); } else R.textContent = t("ko"); })
+        .catch(function(){ R.textContent = t("ko"); }).finally(function(){ sb.disabled = false; }); });
   }
   function open(){ build(); M.hidden = false; setTimeout(function(){ var i = M.querySelector("input"); i && i.focus(); }, 50); }
   function close(){ M.hidden = true; }

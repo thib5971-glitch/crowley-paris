@@ -350,9 +350,9 @@ apply(l0); lsSync(document.getElementById("lang").value || l0); document.getElem
     if (F.elements._honey.value) return; var b = F.querySelector(".cs"); b.disabled = true; R.textContent = tx(2);
     var d = {name:F.elements.name.value.trim(), email:F.elements.email.value.trim(), objet:F.elements.kind.value, message:F.elements.message.value.trim(), langue:document.documentElement.lang||"fr",
       _subject:"Thelemic Map Paris · " + F.elements.kind.value + " · " + F.elements.name.value.trim(), _replyto:F.elements.email.value.trim(), _template:"table", _captcha:"false"};
-    fetch("https://formsubmit.co/ajax/secretariat.otoparisii@gmail.com", {method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body:JSON.stringify(d)})
-      .then(function(r){ return r.json(); }).then(function(j){ if (j && (j.success===true || j.success==="true")){ R.textContent = tx(0); F.reset(); setTimeout(close, 2600); } else if (j && j.message && /activ/i.test(j.message)) R.textContent = j.message; else tmPost(d); })
-      .catch(function(){ tmPost(d); }).finally(function(){ b.disabled = false; });
+    fetch("https://thelemicmap-contact.stele93.workers.dev/", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(d)})
+      .then(function(r){ return r.json(); }).then(function(j){ if (j && j.ok){ R.textContent = tx(0); F.reset(); setTimeout(close, 2600); } else R.textContent = tx(1); })
+      .catch(function(){ R.textContent = tx(1); }).finally(function(){ b.disabled = false; });
   });
 })();</script>
 <script src="stars.js?v=41"></script>
