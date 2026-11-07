@@ -94,11 +94,13 @@ const wide = () => innerWidth >= 900;
 const PARIS = [[48.815, 2.25], [48.905, 2.42]];
 const map = L.map("map", {minZoom:11, maxZoom:19, zoomSnap:.5, maxBounds:[[48.70,2.05],[49.00,2.65]], maxBoundsViscosity:.8, zoomControl:false}).fitBounds(PARIS); { const zf = ()=>map.getContainer().classList.toggle("zfar", map.getZoom() < 14.5); map.on("zoomend", zf); zf(); }
 map.attributionControl.setPrefix(false);
+/* tuile qui n'a pas chargé (réseau, serveur IGN chargé) : on réessaie jusqu'à 5 fois */
+const TR = l => { l.on("tileerror", e=>{ const t = e.tile, n = +(t.dataset.r||0); if (n >= 5) return; t.dataset.r = n + 1; setTimeout(()=>{ if (!t.isConnected) return; const u = (t.dataset.u = t.dataset.u || t.src); t.src = u + (u.includes("?") ? "&" : "?") + "_r=" + (n + 1); }, 500 * (n + 1)); }); return l; };
 const IGN = (layer, fmt) => `https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=${layer}&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=${fmt}`;
 const BASES = {
-  plan:{l:()=>L.tileLayer(IGN("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2","image/png"), {minZoom:11, maxZoom:19, maxNativeZoom:18, attribution:"Plan IGN © IGN"}), th:"plan"},
-  sat:{l:()=>L.tileLayer(IGN("ORTHOIMAGERY.ORTHOPHOTOS","image/jpeg"), {minZoom:11, maxZoom:19, maxNativeZoom:19, attribution:"Orthophotos © IGN"}), th:"sat"},
-  old:{l:()=>L.tileLayer(IGN("GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40","image/jpeg"), {minZoom:11, maxZoom:19, maxNativeZoom:15, attribution:"Carte de l'état-major (1820-1866) © IGN"}), th:"old"}
+  plan:{l:()=>TR(L.tileLayer(IGN("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2","image/png"), {minZoom:11, maxZoom:19, maxNativeZoom:18, attribution:"Plan IGN © IGN", keepBuffer:4})), th:"plan"},
+  sat:{l:()=>TR(L.tileLayer(IGN("ORTHOIMAGERY.ORTHOPHOTOS","image/jpeg"), {minZoom:11, maxZoom:19, maxNativeZoom:19, attribution:"Orthophotos © IGN", keepBuffer:4})), th:"sat"},
+  old:{l:()=>TR(L.tileLayer(IGN("GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40","image/jpeg"), {minZoom:11, maxZoom:19, maxNativeZoom:15, attribution:"Carte de l'état-major (1820-1866) © IGN", keepBuffer:4})), th:"old"}
 };
 let baseL = null;
 let cmpL = null, cmpBar = null;
