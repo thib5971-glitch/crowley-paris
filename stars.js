@@ -3,6 +3,11 @@
   var c = document.createElement("canvas"); c.id = "sky";
   c.style.cssText = "position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none";
   document.body.prepend(c);
+  var hx = document.createElement("div"); hx.setAttribute("aria-hidden","true");
+  hx.style.cssText = "position:fixed;left:50%;top:50%;width:min(86vw,86vh);height:min(86vw,86vh);transform:translate(-50%,-50%);z-index:-1;pointer-events:none;opacity:.09;filter:blur(3px) drop-shadow(0 0 18px rgba(255,255,255,.6));animation:hxb 9s ease-in-out infinite";
+  hx.innerHTML = '<svg viewBox="-50 -50 100 100" width="100%" height="100%"><path d="M0,-46 L43,22 L-43,-22 L0,46 L43,-22 L-43,22 Z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="miter"/></svg>';
+  var ks = document.createElement("style"); ks.textContent = "@keyframes hxb{50%{opacity:.14}}@media (prefers-reduced-motion:reduce){[aria-hidden][style*=hxb]{animation:none!important}}";
+  document.head.appendChild(ks); c.after(hx);
   var x = c.getContext("2d"), W, H, D, S = [], M = [], next = 0;
   var red = matchMedia("(prefers-reduced-motion: reduce)").matches;
   function size(){
