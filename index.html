@@ -334,7 +334,10 @@ apply(l0); lsSync(document.getElementById("lang").value || l0); document.getElem
   rvAdd(q(".shelf .bk"), .2, .1);
   rvAdd(q("p.qt, footer.ft"), 0, .1);
 })();</script>
-<script>(function(){
+<script>function tmPost(d){ var f = document.createElement("form"); f.method = "POST"; f.action = "https://formsubmit.co/secretariat.otoparisii@gmail.com"; f.style.display = "none";
+  d._next = location.href.split("#")[0].split("?")[0] + "?merci=1"; Object.keys(d).forEach(function(k){ var i = document.createElement("input"); i.type = "hidden"; i.name = k; i.value = d[k]; f.appendChild(i); }); document.body.appendChild(f); f.submit(); }
+(function(){
+  if (/[?&]merci=1/.test(location.search)) setTimeout(function(){ var b = document.createElement("div"); b.textContent = ({fr:"Merci ! Votre message a bien été envoyé.",en:"Thank you! Your message has been sent.",es:"¡Gracias! Su mensaje se ha enviado.",de:"Danke! Ihre Nachricht wurde gesendet.",it:"Grazie! Il vostro messaggio è stato inviato."})[document.documentElement.lang]||"Merci !"; b.style.cssText = "position:fixed;left:50%;top:20px;transform:translateX(-50%);z-index:99999;background:#f8c4cc;color:#0a1533;padding:12px 20px;border-radius:14px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.5)"; document.body.appendChild(b); setTimeout(function(){ b.remove(); }, 4000); }, 600);
   var M = document.getElementById("ctM"), F = document.getElementById("ctF"), R = document.getElementById("ctR");
   var TX = {fr:["Merci ! Votre message a bien été envoyé.","L'envoi a échoué, réessayez dans un moment.","Envoi…"],en:["Thank you! Your message has been sent.","Sending failed, please try again shortly.","Sending…"],es:["¡Gracias! Su mensaje se ha enviado.","El envío ha fallado, inténtelo de nuevo más tarde.","Enviando…"],de:["Danke! Ihre Nachricht wurde gesendet.","Senden fehlgeschlagen, bitte später erneut versuchen.","Wird gesendet…"],it:["Grazie! Il vostro messaggio è stato inviato.","Invio non riuscito, riprovate tra poco.","Invio…"]};
   var tx = function(i){ var l = document.documentElement.lang || "fr"; return (TX[l]||TX.fr)[i]; };
@@ -348,8 +351,8 @@ apply(l0); lsSync(document.getElementById("lang").value || l0); document.getElem
     var d = {name:F.elements.name.value.trim(), email:F.elements.email.value.trim(), objet:F.elements.kind.value, message:F.elements.message.value.trim(), langue:document.documentElement.lang||"fr",
       _subject:"Thelemic Map Paris · " + F.elements.kind.value + " · " + F.elements.name.value.trim(), _replyto:F.elements.email.value.trim(), _template:"table", _captcha:"false"};
     fetch("https://formsubmit.co/ajax/secretariat.otoparisii@gmail.com", {method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body:JSON.stringify(d)})
-      .then(function(r){ return r.json(); }).then(function(j){ if (j && (j.success===true || j.success==="true")){ R.textContent = tx(0); F.reset(); setTimeout(close, 2600); } else R.textContent = tx(1); })
-      .catch(function(){ R.textContent = tx(1); }).finally(function(){ b.disabled = false; });
+      .then(function(r){ return r.json(); }).then(function(j){ if (j && (j.success===true || j.success==="true")){ R.textContent = tx(0); F.reset(); setTimeout(close, 2600); } else if (j && j.message && /activ/i.test(j.message)) R.textContent = j.message; else tmPost(d); })
+      .catch(function(){ tmPost(d); }).finally(function(){ b.disabled = false; });
   });
 })();</script>
 <script src="stars.js?v=41"></script>
