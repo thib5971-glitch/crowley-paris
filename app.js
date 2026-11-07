@@ -92,7 +92,7 @@ const wide = () => innerWidth >= 900;
 
 /* ---------- carte et fonds ---------- */
 const PARIS = [[48.815, 2.25], [48.905, 2.42]];
-const map = L.map("map", {minZoom:11, maxZoom:19, zoomSnap:.5, maxBounds:[[48.70,2.05],[49.00,2.65]], maxBoundsViscosity:.8, zoomControl:false}).fitBounds(PARIS);
+const map = L.map("map", {minZoom:11, maxZoom:19, zoomSnap:.5, maxBounds:[[48.70,2.05],[49.00,2.65]], maxBoundsViscosity:.8, zoomControl:false}).fitBounds(PARIS); { const zf = ()=>map.getContainer().classList.toggle("zfar", map.getZoom() < 14.5); map.on("zoomend", zf); zf(); }
 map.attributionControl.setPrefix(false);
 const IGN = (layer, fmt) => `https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=${layer}&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=${fmt}`;
 const BASES = {
@@ -181,10 +181,12 @@ function geoRefine(){
 
 
 /* portraits : ceux fournis (img/), sinon l'image de tête de Wikipédia si sa licence est libre */
-const PIMG = {olsen:"img/p-olsen.jpg", papus:"img/p-papus.jpg", o_papus:"img/p-papus.jpg", o_levi:"img/p-levi.jpg", rodin:"img/p-rodin.jpg", gkelly:"img/p-gkelly.jpg", yorke:"img/p-yorke.jpg", hirsig:"img/p-hirsig.jpg", moina:"img/p-moina.jpg", rose:"img/p-rose.jpg", mathers:"img/p-mathers.jpg", wilde:"img/p-wilde.jpg", neuburg:"img/p-neuburg.jpg", maugham:"img/p-maugham.jpg", o_moreau:"img/p-moreau.jpg", o_peladan:"img/p-peladan.jpg", o_doinel:"img/p-doinel.jpg", o_lacuria:"img/p-lacuria.jpg", o_caithness:"img/p-caithness.jpg", o_mallarme:"img/p-mallarme.jpg", o_satie:"img/p-satie.jpg", o_guaita:"img/p-guaita.jpg", o_michelet:"img/p-michelet.jpg", o_mathers:"img/p-mathers.jpg", o_moina:"img/p-moina.jpg"};
+const PIMG = {crowley:"img/p-crowley.jpg", olsen:"img/p-olsen.jpg", papus:"img/p-papus.jpg", o_papus:"img/p-papus.jpg", o_levi:"img/p-levi.jpg", rodin:"img/p-rodin.jpg", gkelly:"img/p-gkelly.jpg", yorke:"img/p-yorke.jpg", hirsig:"img/p-hirsig.jpg", moina:"img/p-moina.jpg", rose:"img/p-rose.jpg", mathers:"img/p-mathers.jpg", wilde:"img/p-wilde.jpg", neuburg:"img/p-neuburg.jpg", maugham:"img/p-maugham.jpg", o_moreau:"img/p-moreau.jpg", o_peladan:"img/p-peladan.jpg", o_doinel:"img/p-doinel.jpg", o_lacuria:"img/p-lacuria.jpg", o_caithness:"img/p-caithness.jpg", o_mallarme:"img/p-mallarme.jpg", o_satie:"img/p-satie.jpg", o_guaita:"img/p-guaita.jpg", o_michelet:"img/p-michelet.jpg", o_mathers:"img/p-mathers.jpg", o_moina:"img/p-moina.jpg"};
 const PWIKI = {mathers:"Samuel Liddell MacGregor Mathers", o_mathers:"Samuel Liddell MacGregor Mathers", moina:"Moina Mathers", o_moina:"Moina Mathers", rose:"Rose Edith Kelly", gkelly:"Gerald Kelly", rodin:"Auguste Rodin", o_moreau:"Gustave Moreau",
   maugham:"W. Somerset Maugham", neuburg:"Victor Benjamin Neuburg", hirsig:"Leah Hirsig", yorke:"Gerald Yorke", wilde:"Oscar Wilde", o_guaita:"Stanislas de Guaita", o_peladan:"Joséphin Péladan", o_satie:"Erik Satie",
-  o_bailly:"fr:Edmond Bailly", o_caithness:"Marie, Countess of Caithness", o_lacuria:"fr:Paul-François-Gaspard Lacuria", o_mallarme:"Stéphane Mallarmé", o_doinel:"Jules Doinel", o_michelet:"fr:Victor-Émile Michelet"};
+  o_bailly:"fr:Edmond Bailly", o_caithness:"Marie, Countess of Caithness", o_lacuria:"fr:Paul-François-Gaspard Lacuria", o_mallarme:"Stéphane Mallarmé", o_doinel:"Jules Doinel", o_michelet:"fr:Victor-Émile Michelet",
+  bennett:"Arnold Bennett", regardie:"Israel Regardie", manray_p:"Man Ray", epstein:"Jacob Epstein", abbott:"Berenice Abbott", haweis:"Stephen Haweis", beach:"Sylvia Beach", wolfe:"Jane Wolfe (actress)", germer:"Karl Germer",
+  o_ranson:"Paul Ranson", o_debussy:"Claude Debussy", o_chamuel:"fr:Lucien Chamuel", o_gauguin:"Paul Gauguin", o_huysmans:"Joris-Karl Huysmans", o_salis:"Rodolphe Salis", o_rochefoucauld:"fr:Antoine de La Rochefoucauld", o_taxil:"Léo Taxil", o_bois:"fr:Jules Bois", o_wirth:"Oswald Wirth", o_villiers:"Auguste Villiers de l'Isle-Adam", o_saintyves:"Alexandre Saint-Yves d'Alveydre"};
 let PCACHE = {}; try { PCACHE = JSON.parse(localStorage.getItem("cap-pimg")||"{}"); } catch(e){}
 const PPEND = {};
 function portrait(id){
@@ -205,7 +207,7 @@ function paintPortraits(root){ (root||document).querySelectorAll(".sph[data-ph]"
 /* ---------- personnages (sphères à droite) ---------- */
 const initials = n => String(n).replace(/\(.*?\)/g,"").split(/[\s-]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w)).slice(0,2).map(w=>w[0]).join("") || String(n)[0];
 const peopleOf = () => ((S.PE[S.lang]||S.PE.fr||{})[S.sec]) || [];
-const PLBL = {mathers:"S. L. Mathers", o_mathers:"S. L. Mathers", maugham:"W. S. Maugham", o_guaita:"S. de Guaita", o_lacuria:"Abbé Lacuria", o_caithness:"Lady Caithness", o_michelet:"V.-É. Michelet", o_levi:"É. Lévi"};
+const PLBL = {manray_p:"Man Ray", kasimira:"K. Bass", o_villiers:"Villiers", o_saintyves:"Saint-Yves", o_rochefoucauld:"A. de La Rochefoucauld", o_huysmans:"J.-K. Huysmans", o_chamuel:"L. Chamuel", o_taxil:"L. Taxil", mathers:"S. L. Mathers", o_mathers:"S. L. Mathers", maugham:"W. S. Maugham", o_guaita:"S. de Guaita", o_lacuria:"Abbé Lacuria", o_caithness:"Lady Caithness", o_michelet:"V.-É. Michelet", o_levi:"É. Lévi"};
 function pLabel(pp){ if (PLBL[pp.id]) return PLBL[pp.id]; const w = pp.n.replace(/\s*\(.*?\)/,"").trim().split(/\s+/); return w.length < 2 ? w[0] : w[0][0] + ". " + w[w.length-1]; }
 function pplHtml(){ return peopleOf().map(pp=>`<button class="pchip" type="button" data-pp="${pp.id}" title="${esc(pp.n)}"><span class="sph${S.person && S.person.id===pp.id ? " on" : ""}" data-ph="${pp.id}">${esc(initials(pp.n))}</span><span>${esc(pLabel(pp))}</span></button>`).join(""); }
 function renderPeople(){ const box = $("#ppl"); if (box){ box.innerHTML = `<h4>${esc(T.pplT)}</h4>` + pplHtml(); box.querySelectorAll("[data-pp]").forEach(b=>b.onclick=()=>personOpen(b.dataset.pp)); paintPortraits(box); } }
@@ -262,7 +264,10 @@ function chips(){
 function markers(ids, cls){
   LG.clearLayers(); S.mk = {}; S.lines = null; S.full = null;
   ids.forEach(id=>{ const p = P(id);
-    const m = L.marker([p.lat, p.lon], {icon:L.divIcon({className:"mk"+(cls?" "+cls:""), html:`<span>${p.n}</span>`, iconSize:[32,32], iconAnchor:[16,16]}), title:p.nm, alt:p.nm, keyboard:true, riseOnHover:true}).addTo(LG);
+    const who = peopleOf().filter(pp=>pp.id!=="crowley" && pp.at.includes(id)), shown = who.slice(0,3), more = who.length - shown.length;
+    const faces = who.length ? `<i class="mkf">${shown.map(pp=>`<b class="sph" data-ph="${pp.id}" title="${esc(pp.n)}">${esc(initials(pp.n))}</b>`).join("")}${more>0?`<b class="mkm">+${more}</b>`:""}</i>` : "";
+    const m = L.marker([p.lat, p.lon], {icon:L.divIcon({className:"mk"+(cls?" "+cls:""), html:`<span>${p.n}</span>${faces}`, iconSize:[32,32], iconAnchor:[16,16]}), title:p.nm, alt:p.nm, keyboard:true, riseOnHover:true}).addTo(LG);
+    if (who.length) setTimeout(()=>{ const el = m.getElement(); if (el) paintPortraits(el); }, 0);
     m.on("click", ()=>{ if (S.mode==="frise" && m.getElement().classList.contains("dim")) return; openPlace(id, true); }); S.mk[id] = m; });
 }
 function setSec(k, quiet){ if (!S.DS[k] || (S.sec===k && !quiet)) return; S.sec = k; S.D = S.DS[k]; S.tour = null; S.year = S.D.yr[0]; renderChrono(); setMode("all", null, quiet); }
