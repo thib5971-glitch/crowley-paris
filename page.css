@@ -135,3 +135,8 @@ p{font-size:1.02rem}
 .cta:hover img{transform:scale(1.08)}
 .cta b{display:block;margin-bottom:4px}
 .cta p{margin:0;font-size:.95rem}
+
+.perh{display:flex;align-items:center;gap:16px;margin-bottom:6px}
+.perh h2{margin:0}
+.pph{flex:none;width:76px;height:76px;border-radius:50%;background:#132a63 center 20%/cover no-repeat;display:grid;place-items:center;font-family:var(--display);font-size:1.5rem;color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 0 18px rgba(242,200,90,.35)}
+#crowley .pph{width:110px;height:110px}
