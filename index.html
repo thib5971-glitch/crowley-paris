@@ -208,15 +208,24 @@ document.addEventListener("keydown", e=>{ if (e.key==="Escape") lsOpen(false); }
 let PPL = null, PL = "fr";
 const pesc = t => String(t||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const pini = n => n.replace(/\s*\(.*?\)/,"").split(/[\s-]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w)).map(w=>w[0]).slice(0,2).join("");
-const PIMGH = new Set("caithness doinel gkelly guaita hirsig lacuria levi mallarme mathers maugham michelet moina moreau neuburg olsen papus peladan rodin rose satie wilde yorke".split(" "));
-function pph(k, n, cls){ return PIMGH.has(k) ? `<span class="${cls}" style="background-image:url('img/p-${k}.jpg')"></span>` : `<span class="${cls}">${pesc(pini(n))}</span>`; }
+const PIMGH = new Set("crowley caithness doinel gkelly guaita hirsig lacuria levi mallarme mathers maugham michelet moina moreau neuburg olsen papus peladan rodin rose satie wilde yorke".split(" "));
+const PWK = {bennett:"Arnold Bennett", regardie:"Israel Regardie", manray_p:"Man Ray", epstein:"Jacob Epstein", abbott:"Berenice Abbott", haweis:"Stephen Haweis", beach:"Sylvia Beach", wolfe:"Jane Wolfe (actress)", germer:"Karl Germer", ranson:"Paul Ranson", debussy:"Claude Debussy", chamuel:"fr:Lucien Chamuel", gauguin:"Paul Gauguin", huysmans:"Joris-Karl Huysmans", salis:"Rodolphe Salis", rochefoucauld:"fr:Antoine de La Rochefoucauld", taxil:"Léo Taxil", bois:"fr:Jules Bois", wirth:"Oswald Wirth", villiers:"Auguste Villiers de l'Isle-Adam", saintyves:"Alexandre Saint-Yves d'Alveydre", bailly:"fr:Edmond Bailly"};
+let PWC = {}; try { PWC = JSON.parse(localStorage.getItem("cap-pimg2")||"{}"); } catch(e){}
+function pwk(k){ if (PWC[k] !== undefined) return Promise.resolve(PWC[k]); const t = PWK[k]; if (!t) return Promise.resolve(null);
+  const [wk, ti] = t.startsWith("fr:") ? ["fr", t.slice(3)] : ["en", t];
+  return fetch(`https://${wk}.wikipedia.org/w/api.php?origin=*&format=json&action=query&prop=pageimages&piprop=name|thumbnail&pithumbsize=200&redirects=1&titles=${encodeURIComponent(ti)}`).then(r=>r.json()).then(j=>{
+    const pg = Object.values((j.query||{}).pages||{})[0]||{}; if (!pg.pageimage || !pg.thumbnail) return null;
+    return fetch(`https://commons.wikimedia.org/w/api.php?origin=*&format=json&action=query&prop=imageinfo&iiprop=extmetadata&titles=File:${encodeURIComponent(pg.pageimage)}`).then(r=>r.json()).then(q=>{ const ii = ((Object.values((q.query||{}).pages||{})[0]||{}).imageinfo||[])[0]; const lic = String(((ii||{}).extmetadata||{}).LicenseShortName?.value||""); return /public domain|^pd|cc0|cc[ -]by/i.test(lic) ? pg.thumbnail.source : null; }); })
+    .catch(()=>null).then(v=>{ PWC[k] = v; try { localStorage.setItem("cap-pimg2", JSON.stringify(PWC)); } catch(e){} return v; }); }
+function pwkPaint(root){ root.querySelectorAll("[data-wk]").forEach(el=>pwk(el.dataset.wk).then(u=>{ if (!u) return; const im = new Image(); im.onload = ()=>{ el.style.backgroundImage = `url("${u}")`; el.textContent = ""; }; im.src = u; })); }
+function pph(k, n, cls){ return PIMGH.has(k) ? `<span class="${cls}" style="background-image:url('img/p-${k}.jpg')"></span>` : `<span class="${cls}"${PWK[k] ? ` data-wk="${k}"` : ""}>${pesc(pini(n))}</span>`; }
 function pList(){ const d = PPL && (PPL[PL] || PPL.fr); if (!d) return []; const seen = new Set(), out = []; [...d.th, ...d.op].forEach(p=>{ const k = p.id.replace(/^o_/,""); if (!seen.has(k)){ seen.add(k); out.push(Object.assign({k}, p)); } }); return out; }
 function renderMosa(){ const m = document.getElementById("mosa"); if (!m || !PPL) return; const L = pList();
   m.innerHTML = L.map((p,i)=>`<button class="mz" type="button" data-i="${i}">${pph(p.k, p.n, "ph")}<span>${pesc(p.n.replace(/\s*\(.*?\)/,""))}</span></button>`).join("");
-  m.querySelectorAll(".mz").forEach(b=>b.onclick = ()=>pOpen(L[+b.dataset.i])); }
+  m.querySelectorAll(".mz").forEach(b=>b.onclick = ()=>pOpen(L[+b.dataset.i])); pwkPaint(m); }
 function pOpen(p){ const D = PL==="fr" ? {goM:"Voir la carte →"} : Object.assign({goM:"See the map →"}, I[PL]||{});
   document.getElementById("pmb").innerHTML = `<div class="pmh">${pph(p.k, p.n, "ph")}<div><b>${pesc(p.n)}</b><small>${pesc(p.y||"")}</small></div></div>` + (p.h||[]).map(x=>`<p>${pesc(x)}</p>`).join("") + `<a class="go2" href="carte.html?l=${PL}">${pesc(D.goM)}</a>`;
-  document.getElementById("pmod").hidden = false; }
+  document.getElementById("pmod").hidden = false; pwkPaint(document.getElementById("pmb")); }
 function pClose(){ document.getElementById("pmod").hidden = true; }
 document.getElementById("pmod").addEventListener("click", e=>{ if (e.target.id==="pmod" || e.target.closest(".px")) pClose(); });
 document.addEventListener("keydown", e=>{ if (e.key==="Escape") pClose(); });
