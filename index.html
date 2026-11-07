@@ -213,7 +213,7 @@ document.addEventListener("keydown", e=>{ if (e.key==="Escape") lsOpen(false); }
 let PPL = null, PL = "fr";
 const pesc = t => String(t||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const pini = n => n.replace(/\s*\(.*?\)/,"").split(/[\s-]+/).filter(w=>/^[A-ZÀ-Ý]/.test(w)).map(w=>w[0]).slice(0,2).join("");
-const PIMGH = new Set("kasimira chamuel wolfe haweis germer regardie bailly crowley caithness doinel gkelly guaita hirsig lacuria levi mallarme mathers maugham michelet moina moreau neuburg olsen papus peladan rodin rose satie wilde yorke".split(" "));
+const PIMGH = new Set("naglowska courriere kasimira chamuel wolfe haweis germer regardie bailly crowley caithness doinel gkelly guaita hirsig lacuria levi mallarme mathers maugham michelet moina moreau neuburg olsen papus peladan rodin rose satie wilde yorke".split(" "));
 const PWK = {bennett:"Arnold Bennett", regardie:"Israel Regardie", manray_p:"Man Ray", epstein:"Jacob Epstein", abbott:"Berenice Abbott", haweis:"Stephen Haweis", beach:"Sylvia Beach", wolfe:"Jane Wolfe (actress)", germer:"Karl Germer", ranson:"Paul Ranson", debussy:"Claude Debussy", chamuel:"fr:Lucien Chamuel", gauguin:"Paul Gauguin", huysmans:"Joris-Karl Huysmans", salis:"Rodolphe Salis", rochefoucauld:"fr:Antoine de La Rochefoucauld", taxil:"Léo Taxil", bois:"fr:Jules Bois", wirth:"Oswald Wirth", villiers:"Auguste Villiers de l'Isle-Adam", saintyves:"Alexandre Saint-Yves d'Alveydre", bailly:"fr:Edmond Bailly"};
 let PWC = {}; try { PWC = JSON.parse(localStorage.getItem("cap-pimg2")||"{}"); } catch(e){}
 function pwk(k){ if (PWC[k] !== undefined) return Promise.resolve(PWC[k]); const t = PWK[k]; if (!t) return Promise.resolve(null);
