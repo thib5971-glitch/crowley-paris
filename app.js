@@ -387,12 +387,14 @@ function commons(params){ return fetch("https://commons.wikimedia.org/w/api.php?
   .then(j=>Object.values((j.query||{}).pages||{}).map(pg=>{ const ii = (pg.imageinfo||[])[0]||{}, m = ii.extmetadata||{};
     return {thumb:ii.thumburl, page:ii.descriptionurl, mime:ii.mime, idx:pg.index||99, author:strip((m.Artist||{}).value), lic:strip((m.LicenseShortName||{}).value), yr:parseInt((strip((m.DateTimeOriginal||{}).value).match(/1[89]\d\d/)||[])[0]||"0",10)}; })
   .filter(f=>f.thumb && /image\/(jpeg|png|webp)/.test(f.mime||""))); }
+const LPH = {papus:"img/t-papus.jpg", o_papus_tombe:"img/t-papus.jpg"};
 const PQ = {wilde:"Oscar Wilde tomb Epstein Père Lachaise", papus:"Papus Gérard Encausse grave Père-Lachaise", o_papus_tombe:"Papus Gérard Encausse grave Père-Lachaise", o_peladan_tombe:"Joséphin Péladan grave", molay:"Plaque Jacques de Molay Vert-Galant"};
 function photosNow(id){
   const done = l=>{ gal($("#galN"), l, T.nophoto); const h = $("#hero"), f = l[0]; if (h && f && S.sel===id){ h.style.backgroundImage = `url("${f.thumb}")`; h.hidden = false; } };
   if (PH[id]) return done(PH[id]); const p = P(id);
   const q = PQ[id] ? `generator=search&gsrnamespace=6&gsrlimit=12&gsrsearch=${encodeURIComponent(PQ[id]+" filetype:bitmap")}` : `generator=geosearch&ggscoord=${p.lat}%7C${p.lon}&ggsradius=${p.k==="tombe"||p.k==="fete" ? 12 : 80}&ggsnamespace=6&ggslimit=20`;
-  commons(q).then(l=>{ PH[id] = (PQ[id] ? l.sort((a,b)=>a.idx-b.idx) : l).slice(0,10); done(PH[id]); }).catch(()=>done([]));
+  const loc = LPH[id] ? [{thumb:LPH[id], page:LPH[id], mime:"image/jpeg", author:"Thelemic Map Paris", lic:"", yr:0}] : [];
+  commons(q).then(l=>{ PH[id] = loc.concat(PQ[id] ? l.sort((a,b)=>a.idx-b.idx) : l).slice(0,10); done(PH[id]); }).catch(()=>{ PH[id] = loc; done(loc); });
 }
 function photosOld(id){
   const q = S.OQ[id] || (id.startsWith("o_") ? String((S.DS.op.places[id]||{}).oq||"") : ""); if (!q){ gal($("#galO"), [], T.noold); return; }
