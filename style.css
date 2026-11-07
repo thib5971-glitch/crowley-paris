@@ -293,3 +293,8 @@ p{font-size:1.02rem}
 }
 
 .lang option{background:#0e1d44;color:#fff}
+
+.cta.cta2{display:flex!important;align-items:center;gap:14px;border:0!important;background:none!important;box-shadow:none!important;padding:16px 20px!important;text-decoration:none;color:inherit}
+.cta2 img{flex:none;width:56px;height:56px;filter:drop-shadow(0 0 10px rgba(242,200,90,.45));transition:transform .3s}
+.cta2:hover img{transform:scale(1.08)}
+.cta2 b{display:block;color:var(--gold);margin-bottom:3px}.cta2 p{margin:0;font-size:.9rem;color:var(--ink2)}

@@ -312,7 +312,7 @@ function explore(){ const X = S.X, tour = S.mode==="tour" ? tourOf(S.tour) : nul
 function links(){ const k = S.X.lk; if (!k) return ""; const [t, app, oasis, oto, book, amz] = k, a = (h, x, d) => `<li><a href="${h}" target="_blank" rel="noopener"><b>${esc(x)}</b>${d ? `<small>${esc(d)}</small>` : ""}</a></li>`;
   return `<div class="sec"><h3>${esc(S.X.books||"")}</h3><ul class="xl">${a(`https://www.${amz}/dp/1644114798`, "Aleister Crowley in Paris", "Tobias Churton · Inner Traditions, 2022")}${a(`https://www.${amz}/dp/162055545X`, "Occult Paris: The Lost Magic of the Belle Époque", "Tobias Churton · Inner Traditions, 2016")}</ul></div>
     <div class="sec"><h3>${esc(t)}</h3><ul class="xl">${a(APP_URL, app)}${a("https://www.ordotempliorientis.fr/", oto)}${a("https://www.oto-parisii.com/", oasis)}${a(DON_URL, T.don)}</ul><p class="meta" style="margin-top:8px">${esc(S.X.indep||"")}</p></div>`; }
-function cta(){ return `<div class="cta"><b>${esc(T.appT)}</b><p>${esc(T.appP)}</p><a class="btn" href="${APP_URL}" target="_blank" rel="noopener">${esc(T.appB)}</a></div>`; }
+function cta(){ return `<a class="cta cta2" href="${APP_URL}" target="_blank" rel="noopener"><img src="img/l-horae.png" alt="Horae 93" width="56" height="56"><span><b>${esc(T.appT)}</b><p>${esc(T.appP)}</p></span></a>`; }
 function openPlace(id, fly){
   const p = P(id), H = S.D.hist[id] || {h:[], src:[]}; if (!p) return;
   stopDraw(); S.sel = id; S.view = "place"; highlight(id);
