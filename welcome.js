@@ -109,5 +109,9 @@
   }
   window.tmWelcome = welcome; window.tmTour = tour;
   var seen = false; try { seen = localStorage.getItem("tm-wlc")==="1"; } catch(e){}
+  // intégrée dans un autre site (?embed=1) : la carte seule, sans fenêtre d'accueil
+  var EMB = /[?&]embed=1/.test(location.search);
+  if (EMB){ seen = true; document.documentElement.classList.add("embed");
+    addEventListener("DOMContentLoaded", function(){ document.querySelectorAll("a.logo-a").forEach(function(a){ a.target = "_blank"; a.rel = "noopener"; a.href = "https://thelemicmap-paris.com/"; }); }); }
   if (!seen) addEventListener("load", function(){ setTimeout(welcome, 1500); });
 })();
