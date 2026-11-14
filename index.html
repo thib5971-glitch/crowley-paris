@@ -167,7 +167,8 @@ h2.c{text-align:center;margin:28px 0 14px}
 .tob{text-align:center;margin:4px 0 22px}.tob a{color:var(--acc);font-family:var(--sc);letter-spacing:.06em;font-size:.9rem;text-decoration:none;border-bottom:1px solid rgba(248,196,204,.4)}.tob a:hover{color:var(--gold)}
 .shelf{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin:6px 0 10px}
 .bk{display:grid;justify-items:center;gap:8px;width:150px;text-decoration:none;color:#fff;text-align:center}
-.bk .cv{width:130px;height:196px;border-radius:4px 10px 10px 4px;background-size:cover;background-position:center;box-shadow:inset 8px 0 0 rgba(0,0,0,.25),0 14px 30px rgba(0,0,0,.5);display:grid;align-content:end;padding:10px;font-family:var(--display);color:var(--gold);font-size:.9rem;line-height:1.15;border:1px solid rgba(255,255,255,.4);transition:transform .2s}
+.bk .cv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;z-index:-1}
+.bk .cv{position:relative;overflow:hidden;isolation:isolate;width:130px;height:196px;border-radius:4px 10px 10px 4px;background-size:cover;background-position:center;box-shadow:inset 8px 0 0 rgba(0,0,0,.25),0 14px 30px rgba(0,0,0,.5);display:grid;align-content:end;padding:10px;font-family:var(--display);color:var(--gold);font-size:.9rem;line-height:1.15;border:1px solid rgba(255,255,255,.4);transition:transform .2s}
 .bk:hover .cv{transform:translateY(-4px) rotate(-1deg)}
 .bk small{color:var(--ink2);font-size:.8rem}
 .pv{text-align:center;margin:-14px 0 30px;font-size:.88rem;font-style:italic;color:var(--ink2)}
@@ -233,8 +234,8 @@ h2.c{text-align:center;margin:28px 0 14px}
 
   <h2 class="c" id="livres" data-i="lib">Les sources</h2>
   <div class="shelf">
-    <a class="bk" data-amz="1644114798" href="https://www.amazon.fr/dp/1644114798" target="_blank" rel="noopener"><span class="cv" style="background-image:url('img/livre-crowley-in-paris.jpg'),linear-gradient(160deg,#2f55e0,#0a1533)"></span><small>Tobias Churton · 2022</small></a>
-    <a class="bk" data-amz="162055545X" href="https://www.amazon.fr/dp/162055545X" target="_blank" rel="noopener"><span class="cv" style="background-image:url('img/livre-occult-paris.jpg'),linear-gradient(160deg,#e3384a,#0a1533)"></span><small>Tobias Churton · 2016</small></a>
+    <a class="bk" data-amz="1644114798" href="https://www.amazon.fr/dp/1644114798" target="_blank" rel="noopener"><span class="cv" style="background-image:linear-gradient(160deg,#2f55e0,#0a1533)"><img src="img/livre-crowley-in-paris.jpg" alt="" loading="lazy"></span><small>Tobias Churton · 2022</small></a>
+    <a class="bk" data-amz="162055545X" href="https://www.amazon.fr/dp/162055545X" target="_blank" rel="noopener"><span class="cv" style="background-image:linear-gradient(160deg,#e3384a,#0a1533)"><img src="img/livre-occult-paris.jpg" alt="" loading="lazy"></span><small>Tobias Churton · 2016</small></a>
   </div>
   <p class="tob"><a href="https://tobiaschurton.com/4_books.html" target="_blank" rel="noopener" data-i="tob">Le site de Tobias Churton →</a></p>
 
